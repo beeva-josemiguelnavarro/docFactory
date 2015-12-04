@@ -435,7 +435,7 @@ router.get('/', function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
 
     if (uriParts.path == "/") {
-        fs.readFile(__dirname + "/.."+'/views/index.html', function(err, data) {
+        fs.readFile(__dirname + "/.."+'/views/main.html', function(err, data) {
             if (!err) {
                 response.writeHead(200);
                 response.write(data);

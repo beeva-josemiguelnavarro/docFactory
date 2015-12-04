@@ -436,7 +436,7 @@ http.createServer(function(request, response) {
     var uriParts = url.parse(request.url, true, true);
 
     if (uriParts.path == "/") {
-        fs.readFile(__dirname+'/views/index.html', function(err, data) {
+        fs.readFile(__dirname+'/views/main.html', function(err, data) {
             if (!err) {
                 response.writeHead(200);
                 response.write(data);
@@ -469,7 +469,7 @@ http.createServer(function(request, response) {
             fs.readFile(urlRamlToParse, function(err, data) {
                 if (!err) {
                     response.setHeader('Content-type' , headers);
-                    response.end(data);
+                    response.send(data);
                     response.end();
                 } else {
                     console.log ('file not found: ' + request.url);

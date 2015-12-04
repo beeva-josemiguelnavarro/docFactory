@@ -23,7 +23,7 @@ var docFactory = require('./routes/app');
 app.use('/RAML',docFactory);
 
 app.get('/', function (request, response, next) {
-    response.render('views/index');
+    response.sendFile(path.join(__dirname, 'views/main.html'))
 });
 
 app.listen(app.get('port'), function () {
