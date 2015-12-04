@@ -1,0 +1,153 @@
+<html>
+<head>
+    <title>{{title}}</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+    <link href="../static/main.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="genoa-content small-footer">
+    <div class="columns-1">
+        <div class="portlet-layout row-fluid">
+            <div class="portlet-column portlet-column-only span12 yui3-dd-drop">
+                <div class="portlet-boundary portlet-boundary_73_  portlet-breadcrumb  portlet-draggable yui3-dd-drop">
+
+                </div>
+                <div class="portlet-boundary portlet-boundary_56_ portlet-journal-content api-documentation portlet-draggable yui3-dd-drop">
+
+                    <section class="portlet">
+                        <div class="portlet-content">
+                            <div class="portlet-content-container">
+                                <div class="portlet-body">
+                                <!-- beginning of out template -->
+                                    <!-- BUTTONS BAR -->
+                                    <div id="header"><!-- header content goes in here -->
+                                        <div class="size-controls">
+                                            <ul class="size-controls__options">
+                                                <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--resize" data-action="overview" href="{{overview_link}}">Overview</a></li>
+                                                <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--console" data-action="switch-to-console" href="{{console_link}}">Switch to console</a></li>
+                                                <li><span class="resizer"><i class="resizer__arrow"></i></span></li>
+                                            </ul>
+                                            <!-- -->
+                                            <div class="language-controls__options" data-element="language-selector">
+                                                <span class="language-controls__help">SELECT THE PROGRAMING LANGUAGE</span>
+                                                <ul class="language-controls__list" data-list="language-list">
+                                                    <li class="language-controls--selected language-controls__item"><span class="language-controls--selected--text">JAVA</span>
+                                                        <ul class="language-control__items">
+                                                            <li class="language-controls__item" data-item="language-curl">CURL</li>
+                                                            <li class="language-controls__item item-selected" data-item="language-java">JAVA</li>
+                                                            <li class="language-controls__item" data-item="language-python">PYTHON</li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- BUTTONS BAR END-->
+                                    <!-- SIDEBAR -->
+                                    <!-- add class="sidebar-api_security" for SECURITY DOCUMENTATION -->
+                                    <div id="sidebar">
+                                        <div id="nav-anchor">&nbsp;</div>
+                                        <!-- REMOVE THE CONTENT OF THIS TAG IF YOU DONT WANT THIS BUTTON-->
+                                        <h1 class="nav__title"><a data-link="get-api" href="/group/api_market/get-api?api={{get_api_link}}">Get API</a></h1>
+                                        <!-- -->
+                                        <div class="nav-wrapper-scroll">
+                                            <nav class="nav">
+                                                <ul class="nav__list" data-list="documentation-index">
+                                                    {% autoescape false %} {{documentation_index}} {% endautoescape %}
+                                                    <!-- INDEX START -->
+                                                    {% autoescape false %} {{all_index}} {% endautoescape %}
+                                                    <!-- INDEX START -->
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <!-- SIDEBAR END-->
+                                    <!-- CONTENT BLOCK -->
+                                    <div id="api-doc">
+                                        <section class="api-doc__section">
+                                            <!-- security documentation - description -->
+                                            <article>
+                                                <section class="api__documentation" id="api-information">
+                                                    <h1 class="api__documentation__title">API Infomation</h1>
+                                                    {% if api_description.title %}
+                                                    <div class="api__documentation__parameters">
+                                                        <div class="col--first">
+                                                            <span class="parameters__parameter">Title: </span>
+                                                        </div>
+                                                        <div class="col--second">
+                                                            <span class="parameters__description">{{api_description.title}}</span>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if api_description.version %}
+                                                    <div class="api__documentation__parameters">
+                                                        <div class="col--first">
+                                                            <span class="parameters__parameter">Version: </span>
+                                                        </div>
+                                                        <div class="col--second">
+                                                            <span class="parameters__description">{{api_description.version}}</span>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if api_description.protocols %}
+                                                    <div class="api__documentation__parameters">
+                                                        <div class="col--first">
+                                                            <span class="parameters__parameter">Protocols: </span>
+                                                        </div>
+                                                        <div class="col--second">
+                                                            <span class="parameters__description">{{api_description.protocols}}</span>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+
+                                                    {% if api_description.baseUri %}
+                                                    <div class="api__documentation__parameters">
+                                                        <div class="col--first">
+                                                            <span class="parameters__parameter">Base Uri: </span>
+                                                        </div>
+                                                        <div class="col--second">
+                                                            <span class="parameters__description">{{api_description.baseUri}}</span>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </section>
+                                                <section class="api__example api__example--place-holder">
+                                                    <p class="place-holder place-holder--title">example screen</p>
+
+                                                    <p class="place-holder place-holder--text">No examples are available on this section</p>
+
+                                                    <p class="place-holder place-holder--text">Navigate to any service to show its associated examples</p>
+                                                </section>
+                                            </article>
+                                            {% autoescape false %} {{documentation_article}} {% endautoescape %}
+                                            <!-- METHOD DESCRIPTION START -->
+                                            {% autoescape false %} {{all_templates}} {% endautoescape %}
+                                            <!-- METHOD DESCRIPTION END -->
+                                        </section>
+                                    </div>
+                                <!-- end of out template -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<!-- CONTENT BLOCK END-->
+
+</body>
+
+</html>
+
+
+
+

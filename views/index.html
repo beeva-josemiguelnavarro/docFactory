@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DocFactory</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel='stylesheet' href='/static/main.css' />
+</head>
+<body>
+<div class="container-fluid">
+    <div class="text-center">
+        <h1>DocFactory</h1>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <form method="get" action="/RAML">
+                <div class="form-group">
+                    <label for="raml" class="control-label " >RAML</label>
+                    <input type="text" name="raml" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="url" class="control-label text-left">RAML is: </label>
+                    <div class="">
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="url" id="url_local" value="local">
+                                Local
+                            </label>
+                        </div>
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="url" id="url_online" value="online">
+                                Online
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="overviewLink" class="control-label" >Overview Link</label>
+                    <input type="text" name="overviewLink" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="apiName" class="control-label" >Api Name</label>
+                    <input type="text" name="apiName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="termsLink" class="control-label" >Terms & Conditions Link</label>
+                    <input type="text" name="termsLink" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="securityLink" class="control-label" >Security Documentation Link</label>
+                    <input type="text" name="securityLink" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="authenticationLink" class="control-label" >Authentication Documentation Link</label>
+                    <input type="text" name="authenticationLink" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="output" class="control-label text-left">Output: </label>
+                    <div class="">
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="output" id="output_content" value="content">
+                                Content
+                            </label>
+                        </div>
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="output" id="output_html" value="html">
+                                HTML
+                            </label>
+                        </div>
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="output" id="output_raml2html" value="raml2html">
+                                RAML2HTML
+                            </label>
+                        </div>
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="output" id="output_compiled" value="compiled">
+                                Compiled
+                            </label>
+                        </div>
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" name="output" id="output_file" value="file">
+                                File
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit"  class="btn btn-default">GENERATE</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<article  id="{{anchor}}">
+    <section class="api__documentation">
+        <h1 class="api__documentation__title">{{displayName}}</h1>
+        {% if description != undefined %}
+            {% autoescape false %} {{description}} {% endautoescape %}
+        {% endif %}
+        {% if content != undefined %}
+            {% autoescape false %} {{content}} {% endautoescape %}
+        {% endif %}
+    </section>
+    <section class="api__example api__example--place-holder">
+        <!--
+        <p class="place-holder place-holder--title">example screen</p>
+
+        <p class="place-holder place-holder--text">No examples are available on this section</p>
+
+        <p class="place-holder place-holder--text">Navigate to any service to show its associated examples</p>
+        -->
+    </section>
+</article>

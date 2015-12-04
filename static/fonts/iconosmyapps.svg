@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2015 by original authors @ fontello.com</metadata>
+<defs>
+<font id="iconosmyapps" horiz-adv-x="1000" >
+<font-face font-family="iconosmyapps" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="trash" unicode="&#xe800;" d="m406 561h-62v-531h62v531z m125 0h-62v-531h62v531z m125 0h-62v-531h62v531z m-31 203v25c0 16-11 22-27 22h-171c-16 0-36-6-36-22v-25h-203v-62h625v62h-188z m188-875v759c0 25-18 38-43 38h-531c-26 0-51-13-51-38v-759h625z m-47 47h-532v703h532v-703z" horiz-adv-x="1000" />
+<glyph glyph-name="flecha" unicode="&#xe801;" d="m500-145c-269 0-487 222-487 495 0 273 218 495 487 495 269 0 488-222 488-495 0-273-219-495-488-495z m0 947c-245 0-444-204-444-452 0-248 200-452 446-452 245 0 443 204 443 452-1 248-200 452-445 452z m-81-741l-31 30 254 259-254 258 31 30 284-288-284-289z" horiz-adv-x="1000" />
+<glyph glyph-name="edit" unicode="&#xe802;" d="m239 177l-84-4v52h101l-17-48z m44 143h-128v-47h114l14 47z m34 74l17 19h-179v-47h143c7 17 13 22 19 28z m113 114h-275v-47h229l46 47z m97 94h-372v-52l318 3 54 49z m456 17c0 0-281-278-281-277v-475h-704v886c0 31 25 52 57 52h609c31 0 38-21 38-52v-14l79 78c22 22 49 22 71 0l131-133c25-23 22-43 0-65z m-328 139h-610v-844h610v381c-63-72-125-126-125-126-8-8-22-17-35-21l-201-51v-9h-141v46h106 2l56 200c3 11 10 25 19 33l320 325v66z m-241-397l-41-41-26-95 51-52 96 27 39 39-119 122z" horiz-adv-x="1000" />
+</font>
+</defs>
+</svg>

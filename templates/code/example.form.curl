@@ -1,0 +1,4 @@
+curl -X {{ methodData.method| upper }} "{{resolvedUriParams}}" \{% for key,prop in postFormPars %}
+  -d {{key}}={{prop.example}} \{% endfor %}{% for key,prop in  headers %}
+  -H "{{key}}: {{prop.example}}" \{% endfor %}
+  -v

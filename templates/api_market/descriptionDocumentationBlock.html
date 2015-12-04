@@ -1,0 +1,16 @@
+{% for item in documentation %}
+<article>
+    <section class="api__documentation" id="{{item['anchor']}}">
+        <article>
+            <div class="api__documentation__subtitle">
+                <h3 class="api__documentation__title">{{item['title']}}</h3>
+                <p class="api__documentation__text">
+                    {% autoescape false %}{{item['doc']}}{% endautoescape %}
+                </p>
+            </div>
+        </article>
+    </section>
+    <section class="api__example">
+    </section>
+</article>
+{{endfor}}

@@ -1,0 +1,5 @@
+curl -X {{ methodData.method| upper }} "{{resolvedUriParams}}" \ 
+{% for key,prop in  headers %}
+  -H "{{key}}: {{prop.example}}" \ 
+{% endfor %}
+  -v 

@@ -1,0 +1,4 @@
+curl -X {{ methodData.method| upper }} "{{resolvedUriParams}}" \
+  --data @/path/to/file/with/body.json \{% for key,prop in  headers %}
+  -H "{{key}}: {{prop.example}}" \{% endfor %}
+  -v
