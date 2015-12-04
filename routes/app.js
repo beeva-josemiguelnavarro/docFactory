@@ -568,13 +568,13 @@ router.get('/', function (request, response, next) {
                     dataHead["baseUri"] = resolveFullURI(data,data.baseUri,null);
 
                     /****** SECURITY MODULE *****/
-                    docitem = {};
-                    docitem.displayName = "Security Documentation"
-                    docitem.description = marked("- [ Security documentation ]("+securityLink+")");
-                    docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
-                    dataHead["documentation"].push(docitem);
-                    out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
-                    dataHead['documentation_article']+=out
+                    //docitem = {};
+                    //docitem.displayName = "Security Documentation"
+                    //docitem.description = marked("- [ Security documentation ]("+securityLink+")");
+                    //docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
+                    //dataHead["documentation"].push(docitem);
+                    //out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
+                    //dataHead['documentation_article']+=out
                     /******/
                     var termsAndConditions = false;
                     if(whatIsIt(data["documentation"])!="undefined")

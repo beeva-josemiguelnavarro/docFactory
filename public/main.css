@@ -1,3 +1,10 @@
+.container-fluid{
+    padding:20px;
+    margin-bottom: 25px;
+}
+.banner-doc_factory{
+    height: 60px;
+}
 .logo {
     display: inline-block;
     line-height: 1;
