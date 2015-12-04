@@ -3,20 +3,24 @@
   "version": "0.0.1",
   "author": "Beeva <josemiguel.navarro@beeva.com>",
   "description": "API_Market documentation generator. Parses a RAML and generates the custom html for a documentation.",
+  "url": "http://52.31.234.147:8000/",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
-  "repository" :
-    { "type" : "git"
-    , "url" : "https://github.com/beeva-josemiguelnavarro/docFactory"
-    },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/beeva-josemiguelnavarro/docFactory"
+  },
   "dependencies": {
+    "body-parser": "^1.14.1",
     "colors": "*",
+    "cookie-parser": "^1.4.0",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "marked": "*",
     "raml-parser": "*",
     "raml2html": "*",
+    "serve-favicon": "^2.3.0",
     "swig": "*",
     "url": "^0.11.0"
   }
