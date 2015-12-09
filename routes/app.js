@@ -680,6 +680,7 @@ router.get('/', function (request, response, next) {
                     dataHead["console_link"]="";
                     //dataHead["get_api_link"]="PUT_API_NAME_WITH_UNDERSCORES_INSTEAD_OF_SPACES";
                     dataHead["get_api_link"]="";
+                    dataHead["apiName"]=apiName;
                     /***************/
 
                     all_templates = "";

@@ -1,0 +1,8 @@
+.portlet-breadcrumb .breadcrumb {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    color: white;
+    display: inline-block;
+    list-style: none;
+}

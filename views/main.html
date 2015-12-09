@@ -3,7 +3,7 @@
 <head>
     <title>DocFactory</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <link rel='stylesheet' href='/main.css' />
+    <link rel='stylesheet' href='/stylesheets/main.css' />
 </head>
 <body>
 <div class="container-fluid">
@@ -15,15 +15,17 @@
         <hr>
     </div>
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <form method="get" action="/RAML">
+        <div class="col-md-10 col-md-offset-1">
+            <form method="get" class="form-horizontal" action="/RAML">
                 <div class="form-group">
-                    <label for="raml" class="control-label " >RAML</label>
-                    <input type="text" name="raml" class="form-control" required>
+                    <label for="raml" class="control-label col-sm-3" >RAML</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="raml" class="form-control" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="url" class="control-label text-left">RAML is: </label>
-                    <div class="">
+                    <label for="url" class="control-label col-sm-3">RAML is: </label>
+                    <div class="col-sm-9">
                         <div class="radio-inline">
                             <label>
                                 <input type="radio" name="url" id="url_local" value="local">
@@ -39,28 +41,38 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="overviewLink" class="control-label" >Overview Link</label>
-                    <input type="text" name="overviewLink" class="form-control" required>
+                    <label for="overviewLink" class="control-label col-sm-3" >Overview Link</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="overviewLink" class="form-control" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="apiName" class="control-label" >Api Name</label>
-                    <input type="text" name="apiName" class="form-control" required>
+                    <label for="apiName" class="control-label col-sm-3" >Api Name</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="apiName" class="form-control" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="termsLink" class="control-label" >Terms & Conditions Link</label>
-                    <input type="text" name="termsLink" class="form-control" required>
+                    <label for="termsLink" class="control-label col-sm-3" >Terms & Conditions Link</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="termsLink" class="form-control" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="securityLink" class="control-label" >Security Documentation Link</label>
-                    <input type="text" name="securityLink" class="form-control" required>
+                    <label for="securityLink" class="control-label col-sm-3" >Security Documentation Link</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="securityLink" class="form-control" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="authenticationLink" class="control-label" >Authentication Documentation Link</label>
-                    <input type="text" name="authenticationLink" class="form-control" required>
+                    <label for="authenticationLink" class="control-label col-sm-3" >Authentication Documentation Link</label>
+                    <div class="col-sm-9">
+                        <input type="text" name="authenticationLink" class="form-control" required>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="output" class="control-label text-left">Output: </label>
-                    <div class="">
+                    <label for="output" class="control-label col-sm-3">Output: </label>
+                    <div class="col-sm-9">
                         <div class="radio-inline">
                             <label>
                                 <input type="radio" name="output" id="output_content" value="content">
