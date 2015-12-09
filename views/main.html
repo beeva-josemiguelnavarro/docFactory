@@ -4,114 +4,142 @@
     <title>DocFactory</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/main.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="javascripts/docFactoryApp.js"></script>
 </head>
-<body>
-<div class="container-fluid">
-    <div class="text-center">
-        <img src="images/banner.jpg" class="banner-doc_factory" alt="DocFactory">
-        <!--
-        <h1>DocFactory</h1>
-        -->
-        <hr>
-    </div>
-    <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <form method="get" class="form-horizontal" action="/RAML">
-                <div class="form-group">
-                    <label for="raml" class="control-label col-sm-3" >RAML</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="raml" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="url" class="control-label col-sm-3">RAML is: </label>
-                    <div class="col-sm-9">
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="url" id="url_local" value="local">
-                                Local
-                            </label>
+<body ng-app="docFactoryApp">
+    <div class="container-fluid" ng-controller="docFactoryController">
+        <div class="text-center">
+            <img src="images/banner.jpg" class="banner-doc_factory" alt="DocFactory">
+            <!--
+            <h1>DocFactory</h1>
+            -->
+            <hr>
+        </div>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#pane1" data-toggle="tab" ng-click="option=options[0]">Upload</a></li>
+                        <li><a href="#pane2" data-toggle="tab" ng-click="option=options[1]">Local</a></li>
+                        <li><a href="#pane3" data-toggle="tab" ng-click="option=options[2]">Online</a></li>
+                        <li><a href="#pane4" data-toggle="tab" ng-click="option=options[3]">Documetations generated</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="pane1" class="tab-pane active">
+                            <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="raml" class="control-label col-sm-2" >FILE:</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="raml" class="form-control" ng-model="myData.pathFile">
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-default">UPLOAD & GENERATE DOC</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="url" id="url_online" value="online">
-                                Online
-                            </label>
+                        <div id="pane2" class="tab-pane">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="raml" class="control-label col-sm-2" >RAML Path</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="raml" class="form-control" ng-model="myData.pathFile" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit"  class="btn btn-default" ng-click="sendFormLocal()">GENERATE DOC</button>
+                                </div>
+                            </form>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="overviewLink" class="control-label col-sm-3" >Overview Link</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="overviewLink" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="apiName" class="control-label col-sm-3" >Api Name</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="apiName" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="termsLink" class="control-label col-sm-3" >Terms & Conditions Link</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="termsLink" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="securityLink" class="control-label col-sm-3" >Security Documentation Link</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="securityLink" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="authenticationLink" class="control-label col-sm-3" >Authentication Documentation Link</label>
-                    <div class="col-sm-9">
-                        <input type="text" name="authenticationLink" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="output" class="control-label col-sm-3">Output: </label>
-                    <div class="col-sm-9">
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="output" id="output_content" value="content">
-                                Content
-                            </label>
+                        <div id="pane3" class="tab-pane">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="raml" class="control-label col-sm-2" >RAML URL</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="raml" class="form-control" ng-model="myData.pathFile" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()">GENERATE DOC</button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="output" id="output_html" value="html">
-                                HTML
-                            </label>
+                        <div id="pane4" class="tab-pane">
+                            <div ng-if="ready">
+                                <ul>
+                                    <li ng-repeat="file in files" ><a class="file-link" href="" ng-click="getDocumentation(file.url)">{{file.name}}</a></li>
+                                </ul>
+                            </div>
+                            <div ng-if="!ready">
+                                LOADING...
+                            </div>
                         </div>
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="output" id="output_raml2html" value="raml2html">
-                                RAML2HTML
-                            </label>
-                        </div>
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="output" id="output_compiled" value="compiled">
-                                Compiled
-                            </label>
-                        </div>
-                        <div class="radio-inline">
-                            <label>
-                                <input type="radio" name="output" id="output_file" value="file">
-                                File
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <button type="submit"  class="btn btn-default">GENERATE</button>
-                </div>
-            </form>
+                    </div><!-- /.tab-content -->
+                </div><!-- /.tabbable -->
+
+            </div>
+        </div>
+        <div class="row code" ng-if="documentation!=''">
+            <div class="col-md-10 col-md-offset-1">
+                <pre>{{documentation}}</pre>
+            </div>
         </div>
     </div>
-</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

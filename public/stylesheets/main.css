@@ -5,3 +5,21 @@
 .banner-doc_factory{
     height: 60px;
 }
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover{
+    background-color: #ffe;
+}
+.tab-content{
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-top: transparent;
+    background-color: #ffe;
+}
+
+.file-link{
+    margin: 5px;
+    display: inline-block;
+}
+.row.code{
+    margin-top: 20px;
+    padding: 10px;
+}

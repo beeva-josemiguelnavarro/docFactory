@@ -11,6 +11,7 @@ var marked = require('marked');
 var colors = require("colors");
 var raml2html = require('raml2html');
 
+
 var all_templates = "";
 var all_index = "";
 var all_summary = "";
@@ -431,21 +432,250 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
 
 }
 
+
+function parseRaml(data,filename, request, response, next){
+    var uriParts = url.parse(request.url, true, true);
+    var termsLink = uriParts.query.termsLink;
+    var apiName = uriParts.query.apiName;
+    var overviewLink = uriParts.query.overviewLink;
+    var authenticationLink = uriParts.query.authenticationLink;
+
+    try {
+        console.log(JSON.stringify(data, null, 3))
+        if(uriParts.query && uriParts.query.output && uriParts.query.output == "compiled"){
+            headers = { "Content-Type": "text/plain; charset=utf-8" }
+            salida = JSON.stringify(data, null, 3);
+            response.writeHead(200, headers);
+            response.write(salida);
+            response.end();
+            console.log("All done...".rainbow);
+        }
+        else if(uriParts.query && uriParts.query.output && uriParts.query.output == "raml2html"){
+            var config = raml2html.getDefaultConfig();
+            console.log('rameleando')
+            console.log(uriParts.query.output)
+            console.log(data)
+            raml2html.render(data, config).then(function(htmlString){
+                console.log("success");
+
+                headers = {"Content-Type": "text/html; charset=utf-8"};
+
+                response.writeHead(200, headers);
+                response.write(htmlString);
+                response.end();
+
+            }, function(error){
+                console.log("error", error);
+            });
+        }
+        else{
+            /* Generating info for headers */
+            console.log(data);
+            dataHead = new Object();
+            dataHead["documentation"] = [];
+            dataHead["api_description"] = [];
+            dataHead['documentation_article'] = [];
+            //console.log("***************************");
+
+            //console.log("title")
+            if(whatIsIt(data["title"])!="undefined" &&  data["title"].length>0)
+                dataHead["api_description"]['title']=data["title"];
+            //console.log("version")
+            if(whatIsIt(data["version"])!="undefined" && data["version"].length>0)
+                dataHead["api_description"]['version']=data["version"];
+            //console.log("protocols")
+            if(whatIsIt(data["protocols"])!="undefined" &&  data["protocols"].length>0)
+                dataHead["api_description"]['protocols']=data["protocols"];
+            //console.log("baseUri")
+            if(whatIsIt(data["baseUri"])!="undefined" &&  data["baseUri"].length>0)
+                dataHead["api_description"]['uris']=resolveUris(data,data.baseUri,data.baseUriParameters);
+            //console.log("END API DES")
+            //dataHead["version"] = data["version"];
+            //dataHead["title"] = data["title"];
+            //dataHead["protocols"] = data["protocols"];
+            dataHead["baseUri"] = resolveFullURI(data,data.baseUri,null);
+
+            /****** SECURITY MODULE *****/
+            //docitem = {};
+            //docitem.displayName = "Security Documentation"
+            //docitem.description = marked("- [ Security documentation ]("+securityLink+")");
+            //docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
+            //dataHead["documentation"].push(docitem);
+            //out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
+            //dataHead['documentation_article']+=out
+            /******/
+            var termsAndConditions = false;
+            if(whatIsIt(data["documentation"])!="undefined")
+            //console.log("\n\n\n\n\-----------n\n\n\n"+data["documentation"].length+"\n\n++\n\n\n\n\n")
+            //console.log(dataHead['documentation_article'])
+            //console.log("\n\n\n++\n\n\n\n\n"+data["documentation"]+"-----------\n\n\n\n\n\n\n\n")
+                for(i=0;i<data["documentation"].length;i++){
+                    //if(data["documentation"][i]["title"]=="Description"){
+                    ////    dataHead["api_description"] = marked(data["documentation"][i]["content"]+"");
+                    ////    dataHead["api_description"] = removeTags(dataHead["api_description"])
+                    //} else{
+                    docitem = {};
+                    //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+                    //console.log(data["documentation"][i]["content"])
+                    //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+                    //docitem.doc = marked(data["documentation"][i]["content"]+"");
+                    //console.log(docitem.doc)
+                    //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+                    //docitem.doc = removeTags(docitem.doc);
+                    //console.log(docitem.doc)
+                    //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+                    //docitem.title = data["documentation"][i]["title"];
+                    docitem.displayName = data["documentation"][i]["title"];
+                    if(docitem.displayName.toLocaleLowerCase().indexOf("term")>-1 && docitem.displayName.toLocaleLowerCase().indexOf("cond")>-1){
+                        termsAndConditions = true
+                        //console.log('there are terms and conditions')
+                    }
+
+                    //docitem.description = data["documentation"][i]['content']
+                    tempContent = data["documentation"][i]['content']
+                    //console.log('BEFORE',tempContent)
+                    if(tempContent.indexOf("#TODO")>-1 && tempContent.toLowerCase().indexOf("terms")>-1){
+                        //console.log('BEFORE',tempContent)
+                        part1 = tempContent.substring(0,tempContent.indexOf("(#"))
+                        part2 = tempContent.substring(tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1+part1.length)
+                        //console.log('index',tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1)
+                        //console.log('LINK',termsLink)
+                        //console.log('part1',part1)
+                        //console.log('part2',part2)
+                        tempContent = part1 + "(" + termsLink+")"+part2
+                        //console.log('AFTER',tempContent)
+                    }
+                    if(tempContent.indexOf("#TODO")>-1 && tempContent.toLowerCase().indexOf("authentication")>-1){
+                        //console.log('BEFORE',tempContent)
+                        part1 = tempContent.substring(0,tempContent.indexOf("(#"))
+                        part2 = tempContent.substring(tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1+part1.length)
+                        //console.log('index',tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1)
+                        //console.log('LINK',termsLink)
+                        //console.log('part1',part1)
+                        //console.log('part2',part2)
+                        tempContent = part1 + "(" + authenticationLink+")"+part2
+                        //console.log('AFTER',tempContent)
+                    }
+
+                    docitem.description = marked(tempContent)
+                    //console.log(marked(data["documentation"][i]['content']))
+                    docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
+                    dataHead["documentation"].push(docitem);
+                    //console.log(docitem)
+
+                    out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
+
+                    //console.log('************************')
+                    ////console.log(data["documentation"][i])
+                    //console.log(docitem)
+                    //console.log('-----------------------')
+                    //console.log(out)
+                    //console.log('CCCCCCCCCCCCCCCCCCCCCC')
+
+                    dataHead['documentation_article']+=out
+                    //if(dataHead['documentation_article'].indexOf("undefined")>-1){
+                    //    console.log(i,'---')
+                    //    console.log(dataHead['documentation_article'])
+                    //    console.log('wowowoowow')
+                    //} else {
+                    //    console.log('biiiiii')
+                    //    //console.log(dataHead['documentation_article'])
+                    //    console.log('biiiiii')
+                    //}
+                    //}
+
+                    //console.log(dataHead['documentation_article'])
+                }
+            if(!termsAndConditions){
+                console.log("there aren't any terms and conditions in the raml")
+                docitem = {};
+                docitem.displayName = "Terms & Conditions"
+                docitem.description = marked("- ["+apiName+"'s terms & conditions](#"+termsLink+")");
+                docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
+                dataHead["documentation"].push(docitem);
+                out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
+                dataHead['documentation_article']+=out
+            }
+
+            //console.log("*************************** BEFORE DOC");
+            //console.log(dataHead);
+            //console.log("*************************** AFTER DOC");
+
+            /***************/
+//TODO generate the correct links
+            dataHead["overview_link"]=overviewLink;
+            //dataHead["console_link"]="./console";
+            dataHead["console_link"]="";
+            //dataHead["get_api_link"]="PUT_API_NAME_WITH_UNDERSCORES_INSTEAD_OF_SPACES";
+            dataHead["get_api_link"]="";
+            dataHead["apiName"]=apiName;
+            /***************/
+
+            all_templates = "";
+            all_index = "";
+            all_summary = "";
+
+            //parseMainResources(data,dataHead["baseUri"])
+            parseResources(data, dataHead["baseUri"], data["resources"], "", null);
+
+            var template = "";
+
+            if (uriParts.query && uriParts.query.template && uriParts.query.template == "security") {
+                console.log('security');
+                template = swig.compileFile(__dirname + "/.."+"/templates/api_market/securityTemplate.html");
+            } else if (uriParts.query && uriParts.query.full && uriParts.query.full == "true") {
+                template = swig.compileFile(__dirname + "/.." + "/templates/api_market/bodyTemplateFullApiMarket.html");
+            } else {
+                template = swig.compileFile(__dirname + "/.." + "/templates/api_market/bodyTemplate.html");
+            }
+
+            dataHead["all_templates"] = all_templates;
+            if(whatIsIt(dataHead["documentation"])!="undefined"){
+                dataHead["documentation_index"] = compileTemplate(dataHead, "templates/api_market/sidebarListDocumentation.html");
+            }
+            dataHead["all_index"] = all_index;
+            var output = template(dataHead);
+            var content = "";
+            //
+            //if(uriParts.query.url == "online"){
+            //    var indexInitial = urlRamlToParse.indexOf("://")+3;
+            //    toFile("../output/"+(urlRamlToParse).substring(indexInitial).replace(".raml",".html").replace(/\//g,'_'),output.substring(output.indexOf("<!-- BUTTONS BAR -->")-1,output.indexOf("<!-- CONTENT BLOCK END-->")-1));
+            //}else {
+                toFile('./output/'+filename,output.substring(output.indexOf("<!-- BUTTONS BAR -->")-1,output.indexOf("<!-- CONTENT BLOCK END-->")-1));
+            //}
+
+            var headers = {};
+            if (uriParts.query && uriParts.query.output && uriParts.query.output == "html") {
+                headers = {
+                    "Content-Type": "text/plain; charset=utf-8"
+                };
+                content = removeHtmlComments(output.substring(output.indexOf("<body>")+6,output.indexOf("</body>")-1));
+            } else {
+                headers = {
+                    "Content-Type": "text/html; charset=utf-8"
+                };
+                content = output;
+            }
+
+            response.writeHead(200, headers);
+            response.write(content);
+            response.end();
+
+            console.log("All done...".rainbow);
+
+        }
+
+
+    } catch (e) {
+        console.error("Error inner -", e.message);
+        sendError(e, response)
+    }
+}
 router.get('/', function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
 
     if (uriParts.path == "/") {
-        fs.readFile(__dirname + "/.."+'/views/main.html', function(err, data) {
-            if (!err) {
-                response.writeHead(200);
-                response.write(data);
-                response.end();
-            } else {
-                console.log ('file not found: ' + request.url);
-                response.writeHead(404, "Not Found");
-                response.end();
-            }
-        });
+        response.redirect('/')
     }
     else if(uriParts.query && uriParts.query.output && uriParts.query.output == "file"){
         headers = { "Content-Type": "text/plain; charset=utf-8" }
@@ -485,7 +715,6 @@ router.get('/', function (request, response, next) {
         var termsLink = "";
         var apiName = "";
         var overviewLink = "";
-        var securityLink = "";
         var authenticationLink = "";
         var pathName = uriParts.pathname;
         if(uriParts.query && uriParts.query.raml && uriParts.query.raml.length >0){
@@ -497,13 +726,12 @@ router.get('/', function (request, response, next) {
             //urlRamlToParse = "http://apiraml.digitalservices.es:8001";
             urlRamlToParse = uriParts.query.raml;
         } else {
-            urlRamlToParse = "." + uriParts.pathname+"/" + uriParts.query.raml;
+            urlRamlToParse = "./RAML/" + uriParts.query.raml;
         }
         if(uriParts.query && uriParts.query.apiName && uriParts.query.overviewLink && uriParts.query.termsLink && uriParts.query.securityLink && uriParts.query.authenticationLink){
             termsLink = uriParts.query.termsLink;
             apiName = uriParts.query.apiName;
             overviewLink = uriParts.query.overviewLink;
-            securityLink = uriParts.query.securityLink;
             authenticationLink =  uriParts.query.authenticationLink;
             //urlRamlToParse = urlRamlToParse + uriParts.pathname+"/" + uriParts.query.raml;
             //console.log('-----------',urlRamlToParse)
@@ -512,236 +740,7 @@ router.get('/', function (request, response, next) {
         }
         console.log('RAML: '+urlRamlToParse)
         raml.loadFile(urlRamlToParse).then(function(data) {
-            try {
-                console.log(JSON.stringify(data, null, 3))
-                if(uriParts.query && uriParts.query.output && uriParts.query.output == "compiled"){
-                    headers = { "Content-Type": "text/plain; charset=utf-8" }
-                    salida = JSON.stringify(data, null, 3);
-                    response.writeHead(200, headers);
-                    response.write(salida);
-                    response.end();
-                    console.log("All done...".rainbow);
-                }
-                else if(uriParts.query && uriParts.query.output && uriParts.query.output == "raml2html"){
-                    var config = raml2html.getDefaultConfig();
-                    console.log('rameleando')
-                    console.log(uriParts.query.output)
-                    console.log(data)
-                    raml2html.render(data, config).then(function(htmlString){
-                        console.log("success");
-
-                        headers = {"Content-Type": "text/html; charset=utf-8"};
-
-                        response.writeHead(200, headers);
-                        response.write(htmlString);
-                        response.end();
-
-                    }, function(error){
-                        console.log("error", error);
-                    });
-                }
-                else{
-                    /* Generating info for headers */
-                    console.log(data);
-                    dataHead = new Object();
-                    dataHead["documentation"] = [];
-                    dataHead["api_description"] = [];
-                    dataHead['documentation_article'] = [];
-                    //console.log("***************************");
-
-                    //console.log("title")
-                    if(whatIsIt(data["title"])!="undefined" &&  data["title"].length>0)
-                        dataHead["api_description"]['title']=data["title"];
-                    //console.log("version")
-                    if(whatIsIt(data["version"])!="undefined" && data["version"].length>0)
-                        dataHead["api_description"]['version']=data["version"];
-                    //console.log("protocols")
-                    if(whatIsIt(data["protocols"])!="undefined" &&  data["protocols"].length>0)
-                        dataHead["api_description"]['protocols']=data["protocols"];
-                    //console.log("baseUri")
-                    if(whatIsIt(data["baseUri"])!="undefined" &&  data["baseUri"].length>0)
-                        dataHead["api_description"]['uris']=resolveUris(data,data.baseUri,data.baseUriParameters);
-                    //console.log("END API DES")
-                    //dataHead["version"] = data["version"];
-                    //dataHead["title"] = data["title"];
-                    //dataHead["protocols"] = data["protocols"];
-                    dataHead["baseUri"] = resolveFullURI(data,data.baseUri,null);
-
-                    /****** SECURITY MODULE *****/
-                    //docitem = {};
-                    //docitem.displayName = "Security Documentation"
-                    //docitem.description = marked("- [ Security documentation ]("+securityLink+")");
-                    //docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
-                    //dataHead["documentation"].push(docitem);
-                    //out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
-                    //dataHead['documentation_article']+=out
-                    /******/
-                    var termsAndConditions = false;
-                    if(whatIsIt(data["documentation"])!="undefined")
-                    //console.log("\n\n\n\n\-----------n\n\n\n"+data["documentation"].length+"\n\n++\n\n\n\n\n")
-                    //console.log(dataHead['documentation_article'])
-                    //console.log("\n\n\n++\n\n\n\n\n"+data["documentation"]+"-----------\n\n\n\n\n\n\n\n")
-                        for(i=0;i<data["documentation"].length;i++){
-                            //if(data["documentation"][i]["title"]=="Description"){
-                            ////    dataHead["api_description"] = marked(data["documentation"][i]["content"]+"");
-                            ////    dataHead["api_description"] = removeTags(dataHead["api_description"])
-                            //} else{
-                            docitem = {};
-                            //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                            //console.log(data["documentation"][i]["content"])
-                            //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                            //docitem.doc = marked(data["documentation"][i]["content"]+"");
-                            //console.log(docitem.doc)
-                            //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                            //docitem.doc = removeTags(docitem.doc);
-                            //console.log(docitem.doc)
-                            //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                            //docitem.title = data["documentation"][i]["title"];
-                            docitem.displayName = data["documentation"][i]["title"];
-                            if(docitem.displayName.toLocaleLowerCase().indexOf("term")>-1 && docitem.displayName.toLocaleLowerCase().indexOf("cond")>-1){
-                                termsAndConditions = true
-                                //console.log('there are terms and conditions')
-                            }
-
-                            //docitem.description = data["documentation"][i]['content']
-                            tempContent = data["documentation"][i]['content']
-                            //console.log('BEFORE',tempContent)
-                            if(tempContent.indexOf("#TODO")>-1 && tempContent.toLowerCase().indexOf("terms")>-1){
-                                //console.log('BEFORE',tempContent)
-                                part1 = tempContent.substring(0,tempContent.indexOf("(#"))
-                                part2 = tempContent.substring(tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1+part1.length)
-                                //console.log('index',tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1)
-                                //console.log('LINK',termsLink)
-                                //console.log('part1',part1)
-                                //console.log('part2',part2)
-                                tempContent = part1 + "(" + termsLink+")"+part2
-                                //console.log('AFTER',tempContent)
-                            }
-                            if(tempContent.indexOf("#TODO")>-1 && tempContent.toLowerCase().indexOf("authentication")>-1){
-                                //console.log('BEFORE',tempContent)
-                                part1 = tempContent.substring(0,tempContent.indexOf("(#"))
-                                part2 = tempContent.substring(tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1+part1.length)
-                                //console.log('index',tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1)
-                                //console.log('LINK',termsLink)
-                                //console.log('part1',part1)
-                                //console.log('part2',part2)
-                                tempContent = part1 + "(" + authenticationLink+")"+part2
-                                //console.log('AFTER',tempContent)
-                            }
-
-                            docitem.description = marked(tempContent)
-                            //console.log(marked(data["documentation"][i]['content']))
-                            docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
-                            dataHead["documentation"].push(docitem);
-                            //console.log(docitem)
-
-                            out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
-
-                            //console.log('************************')
-                            ////console.log(data["documentation"][i])
-                            //console.log(docitem)
-                            //console.log('-----------------------')
-                            //console.log(out)
-                            //console.log('CCCCCCCCCCCCCCCCCCCCCC')
-
-                            dataHead['documentation_article']+=out
-                            //if(dataHead['documentation_article'].indexOf("undefined")>-1){
-                            //    console.log(i,'---')
-                            //    console.log(dataHead['documentation_article'])
-                            //    console.log('wowowoowow')
-                            //} else {
-                            //    console.log('biiiiii')
-                            //    //console.log(dataHead['documentation_article'])
-                            //    console.log('biiiiii')
-                            //}
-                            //}
-
-                            //console.log(dataHead['documentation_article'])
-                        }
-                    if(!termsAndConditions){
-                        console.log("there aren't any terms and conditions in the raml")
-                        docitem = {};
-                        docitem.displayName = "Terms & Conditions"
-                        docitem.description = marked("- ["+apiName+"'s terms & conditions](#"+termsLink+")");
-                        docitem.anchor = generateAnchor("documentation-"+docitem.displayName)
-                        dataHead["documentation"].push(docitem);
-                        out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
-                        dataHead['documentation_article']+=out
-                    }
-
-                    //console.log("*************************** BEFORE DOC");
-                    //console.log(dataHead);
-                    //console.log("*************************** AFTER DOC");
-
-                    /***************/
-//TODO generate the correct links
-                    dataHead["overview_link"]=overviewLink;
-                    //dataHead["console_link"]="./console";
-                    dataHead["console_link"]="";
-                    //dataHead["get_api_link"]="PUT_API_NAME_WITH_UNDERSCORES_INSTEAD_OF_SPACES";
-                    dataHead["get_api_link"]="";
-                    dataHead["apiName"]=apiName;
-                    /***************/
-
-                    all_templates = "";
-                    all_index = "";
-                    all_summary = "";
-
-                    //parseMainResources(data,dataHead["baseUri"])
-                    parseResources(data, dataHead["baseUri"], data["resources"], "", null);
-
-                    var template = "";
-
-                    if (uriParts.query && uriParts.query.template && uriParts.query.template == "security") {
-                        console.log('security');
-                        template = swig.compileFile(__dirname + "/.."+"/templates/api_market/securityTemplate.html");
-                    } else if (uriParts.query && uriParts.query.full && uriParts.query.full == "true") {
-                        template = swig.compileFile(__dirname + "/.." + "/templates/api_market/bodyTemplateFullApiMarket.html");
-                    } else {
-                        template = swig.compileFile(__dirname + "/.." + "/templates/api_market/bodyTemplate.html");
-                    }
-
-                    dataHead["all_templates"] = all_templates;
-                    if(whatIsIt(dataHead["documentation"])!="undefined"){
-                        dataHead["documentation_index"] = compileTemplate(dataHead, "templates/api_market/sidebarListDocumentation.html");
-                    }
-                    dataHead["all_index"] = all_index;
-                    var output = template(dataHead);
-                    var content = "";
-
-                    if(uriParts.query.url == "online"){
-                        var indexInitial = urlRamlToParse.indexOf("://")+3;
-                        toFile("../output/"+(urlRamlToParse).substring(indexInitial).replace(".raml",".html").replace(/\//g,'_'),output.substring(output.indexOf("<!-- BUTTONS BAR -->")-1,output.indexOf("<!-- CONTENT BLOCK END-->")-1));
-                    }else {
-                        toFile((urlRamlToParse).replace(".raml",".html"),output.substring(output.indexOf("<!-- BUTTONS BAR -->")-1,output.indexOf("<!-- CONTENT BLOCK END-->")-1));
-                    }
-
-                    var headers = {};
-                    if (uriParts.query && uriParts.query.output && uriParts.query.output == "html") {
-                        headers = {
-                            "Content-Type": "text/plain; charset=utf-8"
-                        };
-                        content = removeHtmlComments(output.substring(output.indexOf("<body>")+6,output.indexOf("</body>")-1));
-                    } else {
-                        headers = {
-                            "Content-Type": "text/html; charset=utf-8"
-                        };
-                        content = output;
-                    }
-
-                    response.writeHead(200, headers);
-                    response.write(content);
-                    response.end();
-
-                    console.log("All done...".rainbow);
-
-                }
-
-
-            } catch (e) {
-                console.error("Error inner -", e.message);
-                sendError(e, response)
-            }
+            parseRaml(data,request, response,next)
 
         }, function(error) {
             console.error("Error outer -".red, error.context.cyan, "," + error.message);
@@ -749,6 +748,55 @@ router.get('/', function (request, response, next) {
         });
 
     }
+});
+
+router.get('/online',function (request, response, next) {
+    var uriParts = url.parse(request.url, true, true);
+    var uriFile =   uriParts.query.uri
+    var filename = uriParts.queryParams.apiName
+    console.log(filename)
+    console.log(uriFile)
+    raml.loadFile(uriFile).then(function(data) {
+        parseRaml(data,filename, request, response,next)
+
+    }, function(error) {
+        console.error("/online/ Error loading online file -".red, error.context.cyan, "," + error.message);
+        sendError(error, response)
+    });
+});
+
+router.get('/file/:fileName',function (request, response, next) {
+    var pathFile =  './RAML/'+request.params.fileName;
+    console.log(pathFile)
+    var filename = request.params.fileName.replace('.raml','.html')
+    console.log(filename)
+    raml.loadFile(pathFile).then(function(data) {
+        parseRaml(data,filename,request, response,next)
+
+    }, function(error) {
+        console.error("/file/ Error loading local file -".red, error.context.cyan, "," + error.message);
+        sendError(error, response)
+    });
+});
+
+router.get('/json/:jsonFileName',function (request, response, next) {
+    var route =  './output/'+request.params.jsonFileName;
+    console.log(route)
+    var filename = request.params.jsonFileName.replace('.json','.html')
+    console.log(filename)
+    fs.readFile(route, function(err, data) {
+        if (!err) {
+            parseRaml(data,filename,request, response,next)
+            //response.setHeader('Content-type' , 'application/json');
+            //response.send(data);
+            //response.end();
+        } else {
+            console.log ('file not found: ' + route);
+            //response.setHeader('Content-type' , headers);
+            response.writeHead(404, "Not Found");
+            response.end();
+        }
+    });
 });
 
 module.exports = router;
