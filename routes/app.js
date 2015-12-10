@@ -603,15 +603,8 @@ router.get('/file/:fileName',function (request, response, next) {
     var pathFile =  './RAML/'+request.params.fileName;
     var filename = request.params.fileName.replace('.raml','.html')
     console.log('Getting file: ' ,pathFile,' out: ',filename)
-    if(fs.existsSync(pathFile)){
-        //fs.unlinkSync(pathFile);
-        console.log('exist file: '.red,pathFile.green);
-    } else {
-        console.log('no exist file: '.red,pathFile.green);
-    }
-    raml.loadFile(pathFile).then(function(data) {
+    raml.composeFile(pathFile).then(function(data) {
         parseRaml(data,filename,request, response,next)
-
     }, function(error) {
         console.error("/file/ Error loading local file -".red, error.context.cyan, "," + error.message);
         sendError(error, response)
