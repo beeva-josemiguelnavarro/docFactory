@@ -603,12 +603,22 @@ router.get('/file/:fileName',function (request, response, next) {
     var pathFile =  './RAML/'+request.params.fileName;
     var filename = request.params.fileName.replace('.raml','.html')
     console.log('Getting file: ' ,pathFile,' out: ',filename)
-    raml.composeFile(pathFile).then(function(data) {
-        parseRaml(data,filename,request, response,next)
-    }, function(error) {
-        console.error("/file/ Error loading local file -".red, error.context.cyan, "," + error.message);
-        sendError(error, response)
+    fs.readFile(pathFile, function(err, fileContent) {
+        if (!err) {
+            raml.load(fileContent).then(function(data) {
+                parseRaml(data,filename,request, response,next)
+            }, function(error) {
+                console.error("/file/ Error loading local file -".red, error.context.cyan, "," + error.message);
+                sendError(error, response)
+            });
+        } else {
+            console.log ('file not found: ' + route);
+            //response.setHeader('Content-type' , headers);
+            response.writeHead(404, "Not Found");
+            response.end();
+        }
     });
+
 });
 
 router.get('/json/:jsonFileName',function (request, response, next) {
