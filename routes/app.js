@@ -56,6 +56,7 @@ function removeTags(text){
 }
 
 function toFile(file, content){
+    console.log('FILE name: ',file)
     if(fs.existsSync(file)){
         fs.unlinkSync(file);
         console.log('deleted file: '.red,file.green);
@@ -73,12 +74,12 @@ function replaceCharacteresInAnchor(name){
     return name.toLowerCase().replace('.','').replace('\'','').replace(' & ',' ').replace('&','').replace(/\//g,'-').replace(/\{/g,'').replace(/\}/g,'').trim().split(' ').join('-');
 }
 function generateAnchor(name){
-    console.log('_NAME: '.red,name);
+    //console.log('_NAME: '.red,name);
     if(name.indexOf('\/')==0){
-        console.log('NEW X: '.cyan,replaceCharacteresInAnchor(name))
+        //console.log('NEW X: '.cyan,replaceCharacteresInAnchor(name))
         name = name.substring(1)
     }
-    console.log('NEW N: '.cyan,replaceCharacteresInAnchor(name))
+    //console.log('NEW N: '.cyan,replaceCharacteresInAnchor(name))
     return replaceCharacteresInAnchor(name);
 }
 /*****************************************************************/
@@ -441,7 +442,7 @@ function parseRaml(data,filename, request, response, next){
     var authenticationLink = uriParts.query.authenticationLink;
 
     try {
-        console.log(JSON.stringify(data, null, 3))
+        //console.log(JSON.stringify(data, null, 3))
         if(uriParts.query && uriParts.query.output && uriParts.query.output == "compiled"){
             headers = { "Content-Type": "text/plain; charset=utf-8" }
             salida = JSON.stringify(data, null, 3);
@@ -470,7 +471,7 @@ function parseRaml(data,filename, request, response, next){
         }
         else{
             /* Generating info for headers */
-            console.log(data);
+            //console.log(data);
             dataHead = new Object();
             dataHead["documentation"] = [];
             dataHead["api_description"] = [];
@@ -752,11 +753,9 @@ router.get('/', function (request, response, next) {
 
 router.get('/online',function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
-    console.log(uriParts)
     var uriFile =   uriParts.query.uri
     var filename = uriParts.query.apiName
-    console.log(filename)
-    console.log(uriFile)
+    console.log('Getting online: ' ,uriFile,' out: ',filename)
     raml.loadFile(uriFile).then(function(data) {
         parseRaml(data,filename, request, response,next)
 
@@ -768,9 +767,8 @@ router.get('/online',function (request, response, next) {
 
 router.get('/file/:fileName',function (request, response, next) {
     var pathFile =  './RAML/'+request.params.fileName;
-    console.log(pathFile)
     var filename = request.params.fileName.replace('.raml','.html')
-    console.log(filename)
+    console.log('Getting file: ' ,pathFile,' out: ',filename)
     raml.loadFile(pathFile).then(function(data) {
         parseRaml(data,filename,request, response,next)
 
@@ -782,9 +780,8 @@ router.get('/file/:fileName',function (request, response, next) {
 
 router.get('/json/:jsonFileName',function (request, response, next) {
     var route =  './output/'+request.params.jsonFileName;
-    console.log(route)
     var filename = request.params.jsonFileName.replace('.json','.html')
-    console.log(filename)
+    console.log('Getting json: ' ,route,' out: ',filename)
     fs.readFile(route, function(err, data) {
         if (!err) {
             parseRaml(data,filename,request, response,next)
