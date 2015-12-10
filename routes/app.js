@@ -573,8 +573,7 @@ function parseRaml(data,filename, request, response, next){
 
         console.log('sending response')
         response.writeHead(200, headers);
-        response.send(content);
-        response.end();
+        response.end(content);
 
         console.log("All done...".rainbow);
     } catch (e) {
@@ -604,6 +603,12 @@ router.get('/file/:fileName',function (request, response, next) {
     var pathFile =  './RAML/'+request.params.fileName;
     var filename = request.params.fileName.replace('.raml','.html')
     console.log('Getting file: ' ,pathFile,' out: ',filename)
+    if(fs.existsSync(pathFile)){
+        //fs.unlinkSync(pathFile);
+        console.log('exist file: '.red,pathFile.green);
+    } else {
+        console.log('no exist file: '.red,pathFile.green);
+    }
     raml.loadFile(pathFile).then(function(data) {
         parseRaml(data,filename,request, response,next)
 
