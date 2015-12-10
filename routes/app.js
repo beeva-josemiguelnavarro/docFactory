@@ -439,13 +439,7 @@ function parseRaml(data,filename, request, response, next){
     var termsLink = uriParts.query.termsLink;
     var apiName = uriParts.query.apiName;
     var overviewLink = uriParts.query.overviewLink;
-    var authenticationLink = uriParts.query.authenticationLink;
 
-    console.log('terms-> ',termsLink)
-    console.log('apiName-> ',apiName)
-    console.log('overviewLink-> ',overviewLink)
-    console.log('authenticationLink-> ',authenticationLink)
-    console.log(uriParts)
     try {
         console.log('lets try!!')
         /* Generating info for headers */
@@ -488,9 +482,9 @@ function parseRaml(data,filename, request, response, next){
                 }
                 if(tempContent.indexOf("#TODO")>-1 && tempContent.toLowerCase().indexOf("authentication")>-1){
                     //console.log('BEFORE',tempContent)
-                    part1 = tempContent.substring(0,tempContent.indexOf("(#"))
-                    part2 = tempContent.substring(tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1+part1.length)
-                    tempContent = part1 + "(" + authenticationLink+")"+part2
+                    //part1 = tempContent.substring(0,tempContent.indexOf("(#"))
+                    //part2 = tempContent.substring(tempContent.substring(tempContent.indexOf("(#")).indexOf(")")+1+part1.length)
+                    //tempContent = part1 + "(" + authenticationLink+")"+part2
                     //console.log('AFTER',tempContent)
                 }
 
@@ -573,7 +567,8 @@ function parseRaml(data,filename, request, response, next){
 
         console.log('sending response')
         response.writeHead(200, headers);
-        response.end(content);
+        //response.end(content);
+        response.end(removeHtmlComments(output.substring(output.indexOf("<!-- BUTTONS BAR -->")-1,output.indexOf("<!-- CONTENT BLOCK END-->")-1)))
 
         console.log("All done...".rainbow);
     } catch (e) {
@@ -588,11 +583,10 @@ router.get('/', function (request, response, next) {
 router.get('/online',function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
     var uriFile =   uriParts.query.uri
-    var filename = uriParts.query.apiName
+    var filename =  Date.now() + uriParts.query.apiName + '.raml'
     console.log('Getting online: ' ,uriFile,' out: ',filename)
     raml.loadFile(uriFile).then(function(data) {
         parseRaml(data,filename, request, response,next)
-
     }, function(error) {
         console.error("/online/ Error loading online file -".red, error.context.cyan, "," + error.message);
         sendError(error, response)
@@ -603,20 +597,26 @@ router.get('/file/:fileName',function (request, response, next) {
     var pathFile =  './RAML/'+request.params.fileName;
     var filename = request.params.fileName.replace('.raml','.html')
     console.log('Getting file: ' ,pathFile,' out: ',filename)
-    fs.readFile(pathFile, function(err, fileContent) {
-        if (!err) {
-            raml.load(fileContent).then(function(data) {
-                parseRaml(data,filename,request, response,next)
-            }, function(error) {
-                console.error("/file/ Error loading local file -".red, error.context.cyan, "," + error.message);
-                sendError(error, response)
-            });
-        } else {
-            console.log ('file not found: ' + route);
-            //response.setHeader('Content-type' , headers);
-            response.writeHead(404, "Not Found");
-            response.end();
-        }
+    //fs.readFile(pathFile, function(err, fileContent) {
+    //    if (!err) {
+    //        raml.load(fileContent).then(function(data) {
+    //            parseRaml(data,filename,request, response,next)
+    //        }, function(error) {
+    //            console.error("/file/ Error loading local file -".red, error.context.cyan, "," + error.message);
+    //            sendError(error, response)
+    //        });
+    //    } else {
+    //        console.log ('file not found: ' + route);
+    //        //response.setHeader('Content-type' , headers);
+    //        response.writeHead(404, "Not Found");
+    //        response.end();
+    //    }
+    //});
+    raml.loadFile(pathFile).then(function(data) {
+        parseRaml(data,filename, request, response,next)
+    }, function(error) {
+        console.error("/online/ Error loading online file -".red, error.context.cyan, "," + error.message);
+        sendError(error, response)
     });
 
 });

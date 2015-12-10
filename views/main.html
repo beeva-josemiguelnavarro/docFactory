@@ -27,7 +27,7 @@
                     </ul>
                     <div class="tab-content">
                         <div id="pane1" class="tab-pane active">
-                            <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data">
+                            <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data" name="uploadForm">
                                 <div class="form-group">
                                     <label for="apiName" class="control-label col-sm-2" >Api Name</label>
                                     <div class="col-sm-10">
@@ -53,12 +53,12 @@
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-default">UPLOAD & GENERATE DOC</button>
+                                    <button type="submit" class="btn btn-default" ng-disabled="uploadForm.$invalid">UPLOAD & GENERATE DOC</button>
                                 </div>
                             </form>
                         </div>
                         <div id="pane2" class="tab-pane">
-                            <form class="form-horizontal">
+                            <form class="form-horizontal" name="localForm">
                                 <div class="form-group">
                                     <label for="raml" class="control-label col-sm-2" >RAML Path</label>
                                     <div class="col-sm-10">
@@ -84,20 +84,30 @@
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <button type="submit"  class="btn btn-default" ng-click="sendFormLocal()">GENERATE DOC</button>
+                                    <button type="submit"  class="btn btn-default" ng-disabled="localForm.$invalid" ng-click="sendFormLocal()">GENERATE DOC</button>
                                 </div>
                             </form>
                             <hr>
                             <div class="raml-files" ng-if="ramls">
                                 <h4>Files in the server</h4>
-                                <p>Documentation will be opened in a new tab</p>
+                                <p>Click on a name to preload the RAML path field</p>
                                 <ul>
-                                    <li ng-repeat="raml in ramls"><a href="{{raml.url}}" target="_blank">{{raml.name}}</a></li>
+                                    <li ng-repeat="raml in ramls"><a class="file-link" ng-click="myData.pathFile = raml.name" ng-class="{active:raml.name==myData.pathFile}" >{{raml.name}}</a></li>
                                 </ul>
+                            </div>
+
+                            <div class="row code" ng-if="!parsing && parsedDocumentation!=''">
+                                <pre>{{parsedDocumentation}}</pre>
+                            </div>
+                            <div class="row code" ng-if="parsing && !parsingError">
+                                <pre>Generating the doc</pre>
+                            </div>
+                            <div class="row code" ng-if="error && parsingError">
+                                <pre>Error generating the doc</pre>
                             </div>
                         </div>
                         <div id="pane3" class="tab-pane">
-                            <form class="form-horizontal">
+                            <form class="form-horizontal" name="onlineForm">
                                 <div class="form-group">
                                     <label for="raml" class="control-label col-sm-2" >RAML URL</label>
                                     <div class="col-sm-10">
@@ -123,7 +133,7 @@
                                     </div>
                                 </div>
                                 <div class="text-center">
-                                    <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()">GENERATE DOC</button>
+                                    <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()" ng-disabled="onlineForm.$invalid" >GENERATE DOC</button>
                                 </div>
                             </form>
                         </div>
@@ -138,9 +148,7 @@
                                 LOADING...
                             </div>
                             <div class="row code" ng-if="documentation!=''">
-                                <div class="col-md-10 col-md-offset-1">
-                                    <pre>{{documentation}}</pre>
-                                </div>
+                                <pre>{{documentation}}</pre>
                             </div>
                         </div>
                     </div><!-- /.tab-content -->
