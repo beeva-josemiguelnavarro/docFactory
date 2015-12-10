@@ -752,8 +752,9 @@ router.get('/', function (request, response, next) {
 
 router.get('/online',function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
+    console.log(uriParts)
     var uriFile =   uriParts.query.uri
-    var filename = uriParts.queryParams.apiName
+    var filename = uriParts.query.apiName
     console.log(filename)
     console.log(uriFile)
     raml.loadFile(uriFile).then(function(data) {

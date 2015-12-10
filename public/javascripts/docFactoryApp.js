@@ -13,6 +13,9 @@ angular.module('docFactoryApp',[])
             termsLink:''
         }
         $scope.documentation = '';
+        $scope.documentationSelected = ''
+        $scope.ramls = []
+        $scope.ramlDocumentation = '';
 
         $scope.loadDocumentations = function(){
             console.log('getting docs')
@@ -32,6 +35,30 @@ angular.module('docFactoryApp',[])
             $http.get(index).then(function(body){
                 console.log(body)
                 $scope.documentation = body.data
+                $scope.documentationSelected = index
+                $scope.$apply()
+            },function(error){
+                console.log('error',error)
+            });
+        }
+
+        $scope.loadRamls = function () {
+            $scope.ready = false
+            $http.get('/ramls').then(function(body){
+                console.log(body)
+                $scope.ramls = body.data
+                $scope.ready = true
+            },function(error){
+                console.log('error',error)
+                $scope.ready = true
+            });
+        }
+
+        $scope.getRamlDocumentation = function (index) {
+            console.log(index)
+            $http.get(index).then(function(body){
+                console.log(body)
+                $scope.ramlDocumentation = body.data
                 $scope.$apply()
             },function(error){
                 console.log('error',error)
@@ -59,6 +86,8 @@ angular.module('docFactoryApp',[])
         $scope.$watch('option',function(newValue, oldValue){
             if(newValue == $scope.options[3]){
                 $scope.loadDocumentations();
+            } else if(newValue == $scope.options[1]){
+                $scope.loadRamls();
             }
         })
 

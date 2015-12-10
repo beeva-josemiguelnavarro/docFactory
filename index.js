@@ -80,7 +80,7 @@ app.get('/documentations',function (request, response, next){
             }
             console.log(data)
             response.send(data);
-            response.end();
+            response.end()
         }
     })
 })
@@ -99,6 +99,32 @@ app.get('/html',function (request, response, next){
         }
     });
 
+})
+
+app.get('/ramls',function (request, response, next){
+    console.log('getting ramls')
+    fs.readdir('./RAML/',function(err,files){
+        if(err){
+            console.log('error',err);
+            response.writeHead(404, err);
+            response.end();
+        } else {
+            console.log(files);
+            var data = []
+            for(var index in files){
+                console.log(files[index])
+                if(files[index].indexOf('.raml')>-1){
+                    data.push({
+                        name:files[index],
+                        url:'/RAML/file/'+files[index]
+                    })
+                }
+            }
+            console.log(data)
+            response.send(data);
+            response.end()
+        }
+    })
 })
 app.listen(app.get('port'), function () {
     console.log('Node app is running on port', app.get('port'));
