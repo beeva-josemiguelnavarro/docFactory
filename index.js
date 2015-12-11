@@ -42,15 +42,28 @@ var storage = multer.diskStorage({
         cb(null, './RAML/')
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname) //Appending .jpg
+        cb(null, /*Date.now() +*/ file.originalname) //Appending .jpg
     }
 })
 
 
-app.post('/upload',multer({ storage: storage }).any(),function(req,res) {
-    console.log(req.body) // form fields
-    console.log(req.files) // form files
-    res.redirect('/RAML/file/'+req.files[0].filename)
+app.post('/upload',multer({ storage: storage }).any(),function(request, response, next) {
+    console.log(request.body) // form fields
+    console.log(request.files) // form files
+    var error = false
+    for(var index in request.files){
+        var filename = request.files[index].filename
+        console.log(filename,fs.existsSync('./RAML/'+filename))
+        if(!fs.existsSync('./RAML/'+filename))
+            error = true
+    }
+    if(!error){
+        response.writeHead(201, "Created");
+        response.end()
+    } else {
+        response.writeHead(404, "Not Found");
+        response.end();
+    }
 });
 
 
@@ -117,6 +130,11 @@ app.get('/ramls',function (request, response, next){
                     data.push({
                         name:files[index],
                         url:'/RAML/file/'+files[index]
+                    })
+                }else if(files[index].indexOf('.json')>-1){
+                    data.push({
+                        name:files[index],
+                        url:'/RAML/json/'+files[index]
                     })
                 }
             }

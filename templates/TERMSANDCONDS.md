@@ -1,0 +1,1 @@
+- ["api-name" API's terms & conditions]("terms-link")

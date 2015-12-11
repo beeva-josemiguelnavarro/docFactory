@@ -5,6 +5,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
     <link rel='stylesheet' href='/stylesheets/main.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="javascripts/angular-file-upload.min.js"></script>
     <script src="javascripts/docFactoryApp.js"></script>
 </head>
 <body ng-app="docFactoryApp">
@@ -29,31 +30,88 @@
                         <div id="pane1" class="tab-pane active">
                             <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data" name="uploadForm">
                                 <div class="form-group">
-                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
+                                    <div class="row">
+                                        <label for="raml" class="control-label col-sm-2 label-files" >FILES:</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" nv-file-select="" uploader="uploader" multiple="">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
+                                    <div class="row">
+                                        <div class="col-sm-10 upload-zone">
+                                            <p>Queue length: {{ uploader.queue.length }}</p>
+
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th width="50%">Name</th>
+                                                    <th ng-show="uploader.isHTML5">Size</th>
+                                                    <th ng-show="uploader.isHTML5">Progress</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="item in uploader.queue">
+                                                    <td><strong>{{ item.file.name }}</strong></td>
+                                                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                                    <td ng-show="uploader.isHTML5">
+                                                        <div class="progress" style="margin-bottom: 0;">
+                                                            <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                                        <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                                        <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                                    </td>
+                                                    <td nowrap>
+                                                        <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                                            <span class="glyphicon glyphicon-upload"></span> Upload
+                                                        </button>
+                                                        <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                                                            <span class="glyphicon glyphicon-trash"></span> Remove
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <div>
+                                                <div>
+                                                    Queue progress:
+                                                    <div class="progress" style="">
+                                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-center">
+                                                    <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                                                        <span class="glyphicon glyphicon-upload"></span> Upload all
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                                                        <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                                                        <span class="glyphicon glyphicon-trash"></span> Remove all
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div>
+                                                <div>
+                                                    Files uploaded:
+                                                    <p ng-if="itemsUploaded.length<=0">No items</p>
+                                                    <p ng-if="itemsUploaded>0">
+                                                        <ul>
+                                                            <li ng-repeat="item in itemsUploaded">{{item}}</li>
+                                                        </ul>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="raml" class="control-label col-sm-2" >FILE:</label>
-                                    <div class="col-sm-10">
-                                        <input type="file" name="raml" class="form-control" ng-model="myData.pathFile">
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-default" ng-disabled="uploadForm.$invalid">UPLOAD & GENERATE DOC</button>
                                 </div>
                             </form>
                         </div>
@@ -83,6 +141,32 @@
                                         <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="baseuri" class="form-control" ng-model="myData.baseuri">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="environment" class="form-control" ng-model="myData.environment">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
+                                    <div class="col-sm-10">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myData.quickstart" value="no"> No
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myData.quickstart" value="general" checked> General
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myData.quickstart" value="paystats"> PayStats
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="text-center">
                                     <button type="submit"  class="btn btn-default" ng-disabled="localForm.$invalid" ng-click="sendFormLocal()">GENERATE DOC</button>
                                 </div>
@@ -102,7 +186,7 @@
                             <div class="row code" ng-if="parsing && !parsingError">
                                 <pre>Generating the doc</pre>
                             </div>
-                            <div class="row code" ng-if="error && parsingError">
+                            <div class="row code" ng-if="!parsing && parsingError">
                                 <pre>Error generating the doc</pre>
                             </div>
                         </div>
@@ -111,31 +195,67 @@
                                 <div class="form-group">
                                     <label for="raml" class="control-label col-sm-2" >RAML URL</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="raml" class="form-control" ng-model="myData.pathFile" required>
+                                        <input type="text" name="raml" class="form-control" ng-model="myDataOnline.pathFile" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
+                                        <input type="text" name="overviewLink" class="form-control" ng-model="myDataOnline.overviewLink" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="apiName" class="control-label col-sm-2" >Api Name</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
+                                        <input type="text" name="apiName" class="form-control" ng-model="myDataOnline.apiName" required>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
                                     <div class="col-sm-10">
-                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
+                                        <input type="text" name="termsLink" class="form-control" ng-model="myDataOnline.termsLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="baseuri" class="form-control" ng-model="myDataOnline.baseuri">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="environment" class="form-control" ng-model="myDataOnline.environment">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
+                                    <div class="col-sm-10">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myDataOnline.quickstart" value="no"> No
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myDataOnline.quickstart" value="general" checked> General
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myDataOnline.quickstart" value="paystats"> PayStats
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="text-center">
                                     <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()" ng-disabled="onlineForm.$invalid" >GENERATE DOC</button>
                                 </div>
                             </form>
+                            <hr>
+                            <div class="row code" ng-if="!parsingOnline && parsedDocumentationOnline!=''">
+                                <pre>{{parsedDocumentationOnline}}</pre>
+                            </div>
+                            <div class="row code" ng-if="parsingOnline && !parsingOnlineError">
+                                <pre>Generating the doc</pre>
+                            </div>
+                            <div class="row code" ng-if="!parsingOnline && parsingOnlineError">
+                                <pre>Error generating the doc</pre>
+                            </div>
                         </div>
                         <div id="pane4" class="tab-pane">
                             <h4>Documentations generated in the server</h4>
@@ -147,7 +267,7 @@
                             <div ng-if="!ready">
                                 LOADING...
                             </div>
-                            <div class="row code" ng-if="documentation!=''">
+                            <div class="row code" ng-if="ready && documentation!=''">
                                 <pre>{{documentation}}</pre>
                             </div>
                         </div>
