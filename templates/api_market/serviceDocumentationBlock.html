@@ -172,13 +172,9 @@
                         <label class="example__info__text">{{key}}</label>
                     </span>
                  </div>
-        {% if key == "application/json" %}
                  <span class="example__json example__response--{{httpCode}} hidden">
                      <pre class="prettyprint"> {{ prop["example"] }}</pre>
                  </span>
-        {% else %}
-                 <span class="example__json no_parse example__response--{{httpCode}} hidden">{{ prop["example"] }}</span>
-        {% endif %}
     {% endfor %}
     {% for key,prop in responses["headers"] %}
                  <div class="example__info__col">
@@ -192,19 +188,12 @@
                         <label class="example__info__text">{{key}}</label>
                     </span>
                 </div>
-         {% if key == "application/json" %}
                  <span class="example__json example__response--{{httpCode}} hidden">
                      <pre class="prettyprint"> {{ prop["example"] }}</pre>
                  </span>
-         {% else %}
-                 <span class="example__json no_parse example__response--{{httpCode}} hidden">{{ prop["example"] }}</span>
-         {% endif %}
     {% endfor %}
              </div>
 {% endfor %}
-            <!-- EXAMPLE CODE CONTAINER -->
-            <div class="example__json-container example__json">
-            </div>
         </div>
     </section>
 </article>
