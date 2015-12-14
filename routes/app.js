@@ -10,7 +10,7 @@ var swig = require('swig');
 var marked = require('marked');
 var colors = require("colors");
 var raml2html = require('raml2html');
-
+var pretty = require('js-object-pretty-print').pretty;
 
 var all_templates = "";
 var all_index = "";
@@ -328,6 +328,25 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataIndex.displayName = dataHeadTempl["displayName"];
         }
 
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
         for (var methodKey in resources[resourceKey]["methods"]) {
             dataobject = new Object();
             //console.log(resources[resourceKey]["methods"][methodKey])
@@ -338,8 +357,30 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             //omethod.description = formatedApiMarket(removeTags(omethod.description));
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
-            //for(var res in omethod.responses)
-            //    console.log(omethod.responses[res])
+            for(var res in omethod.responses){
+                //console.log('///',omethod.responses[res])
+                if(omethod.responses[res].body!==undefined && omethod.responses[res].body['application/json']!==undefined){
+                    //var jsonToProcess = omethod.responses[res].body['application/json']['example']
+                    //console.log('jsonToProcess',jsonToProcess)
+                    //var processedJson = jsonToProcess
+                    //try {
+                    //    console.log('parsing')
+                    //    processedJson = JSON.parse(jsonToProcess,undefined,4)
+                    //    console.log('well done')
+                    //} catch (e) {
+                    //    console.log('error')
+                    //    processedJson = JSON.parse(jsonToProcess.replace(/.../g, '"more":"..."'))
+                    //    console.log('processedJson',processedJson)
+                    //}
+                    //var highlightedJson = syntaxHighlight(omethod.responses[res].body['application/json']['example'])
+                    //console.log('higlighted',highlightedJson)
+                    //omethod.responses[res].body['application/json']['formatedExample']=highlightedJson
+                    omethod.responses[res].body['application/json']['formatedExample']=syntaxHighlight(omethod.responses[res].body['application/json']['example']).trim()
+                //}   else {
+                //    console.log('--- undefined')
+                }
+            }
+
             dataobject.methodData = omethod;
             //console.log(omethod)
 
@@ -380,8 +421,8 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 oqueryparam = omethod.queryParameters[qParamKey];
                 oqueryparam.key = qParamKey;
                 oqueryparam.text = (oqueryparam.required ? "required " : "optional ") + (oqueryparam.type == "number" ? "float" : oqueryparam.type) +".";
-                console.log(oqueryparam)
-                console.log('--------')
+                //console.log(oqueryparam)
+                //console.log('--------')
                 dataobject.queryParams.push(oqueryparam);
             }
 

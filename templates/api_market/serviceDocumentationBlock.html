@@ -172,9 +172,15 @@
                         <label class="example__info__text">{{key}}</label>
                     </span>
                  </div>
+                 {% if prop["formatedExample"] %}
                  <span class="example__json example__response--{{httpCode}} hidden">
-                     <pre class="prettyprint"> {{ prop["example"] }}</pre>
+                     <pre class="prettyprint_json">{% autoescape false %} {{ prop["formatedExample"] }} {% endautoescape %}</pre>
                  </span>
+                 {% else %}
+                 <span class="example__json example__response--{{httpCode}} hidden">
+                     <pre class="prettyprint_json"> {{ prop["example"] }}</pre>
+                 </span>
+                 {% endif %}
     {% endfor %}
     {% for key,prop in responses["headers"] %}
                  <div class="example__info__col">
@@ -188,9 +194,15 @@
                         <label class="example__info__text">{{key}}</label>
                     </span>
                 </div>
+                 {% if prop["formatedExample"] %}
                  <span class="example__json example__response--{{httpCode}} hidden">
-                     <pre class="prettyprint"> {{ prop["example"] }}</pre>
+                     <pre class="prettyprint_json">{% autoescape false %} {{ prop["formatedExample"] }} {% endautoescape %}</pre>
                  </span>
+                 {% else %}
+                 <span class="example__json example__response--{{httpCode}} hidden">
+                     <pre class="prettyprint_json"> {{ prop["example"] }}</pre>
+                 </span>
+                 {% endif %}
     {% endfor %}
              </div>
 {% endfor %}
