@@ -380,6 +380,8 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 oqueryparam = omethod.queryParameters[qParamKey];
                 oqueryparam.key = qParamKey;
                 oqueryparam.text = (oqueryparam.required ? "required " : "optional ") + (oqueryparam.type == "number" ? "float" : oqueryparam.type) +".";
+                console.log(oqueryparam)
+                console.log('--------')
                 dataobject.queryParams.push(oqueryparam);
             }
 
@@ -624,7 +626,7 @@ function preprocessRamlJson(data,params){
                 content: textAuth
             }
             var documentation = updatedData["documentation"]
-            documentation.splice(index,0,authentication)
+            documentation.splice(index,1,authentication)
             updatedData["documentation"] = documentation
         }
     }

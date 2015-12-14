@@ -61,8 +61,14 @@
             </div>
 {% for key,prop in queryParams %}
             <div class="api__documentation__parameters">
-                <div class="col--first"><span class="parameters__parameter">{{prop["key"]}}</span> <span
-                        class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} <label class="parameters__type">({{prop.type}})</label></span>
+                <div class="col--first">
+                    <span class="parameters__parameter">{{prop["key"]}}</span>
+                    <span class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} <label class="parameters__type">({{prop.type}})</label>
+                        {% if prop["enum"]%}
+                        <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
+                        {% endif %}
+                    </span>
+
                 </div>
 
                 <div class="col--second">
@@ -71,10 +77,7 @@
                     {% if prop["example"]%}
                     <span
                         class="paramters__example"> <strong>Example: </strong>{% autoescape false %}{{prop["example"]}}{% endautoescape %}</span>
-                    {% elseif prop["enum"]%}
-                    <span
-                            class="paramters__example"> <strong>Enum: </strong>[ {{prop["enum"]}} ]</span>
-                    {% else%}
+                    {% else %}
                     <span
                             class="paramters__example"> <strong> </strong> </span>
                     {% endif %}
@@ -92,7 +95,11 @@
 {% for key,prop in uriParams %}
             <div class="api__documentation__parameters">
                 <div class="col--first"><span class="parameters__parameter">{{prop["key"]}}</span> <span
-                        class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} <label class="parameters__type">({{prop.type}})</label></span>
+                        class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} <label class="parameters__type">({{prop.type}})</label>
+                    {% if prop["enum"]%}
+                    <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
+                    {% endif %}
+                </span>
                 </div>
 
                 <div class="col--second">
@@ -101,9 +108,9 @@
                     {% if prop["example"]%}
                     <span
                             class="paramters__example"> <strong>Example: </strong>{% autoescape false %}{{prop["example"]}}{% endautoescape %}</span>
-                    {% elseif prop["enum"]%}
+                    {% else %}
                     <span
-                            class="paramters__example"> <strong>Enum: </strong>[ {{prop["enum"]}} ]</span>
+                            class="paramters__example"> <strong> </strong> </span>
                     {% endif %}
                 </div>
             </div>
