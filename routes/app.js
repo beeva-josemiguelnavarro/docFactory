@@ -349,35 +349,13 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
 
         for (var methodKey in resources[resourceKey]["methods"]) {
             dataobject = new Object();
-            //console.log(resources[resourceKey]["methods"][methodKey])
             dataobject.queryParams = [];
             omethod = resources[resourceKey]["methods"][methodKey];
-            //omethod.description = marked(omethod.description+"");
-            //omethod.description+="";
-            //omethod.description = formatedApiMarket(removeTags(omethod.description));
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
             for(var res in omethod.responses){
-                //console.log('///',omethod.responses[res])
                 if(omethod.responses[res].body!==undefined && omethod.responses[res].body['application/json']!==undefined){
-                    //var jsonToProcess = omethod.responses[res].body['application/json']['example']
-                    //console.log('jsonToProcess',jsonToProcess)
-                    //var processedJson = jsonToProcess
-                    //try {
-                    //    console.log('parsing')
-                    //    processedJson = JSON.parse(jsonToProcess,undefined,4)
-                    //    console.log('well done')
-                    //} catch (e) {
-                    //    console.log('error')
-                    //    processedJson = JSON.parse(jsonToProcess.replace(/.../g, '"more":"..."'))
-                    //    console.log('processedJson',processedJson)
-                    //}
-                    //var highlightedJson = syntaxHighlight(omethod.responses[res].body['application/json']['example'])
-                    //console.log('higlighted',highlightedJson)
-                    //omethod.responses[res].body['application/json']['formatedExample']=highlightedJson
                     omethod.responses[res].body['application/json']['formatedExample']=syntaxHighlight(omethod.responses[res].body['application/json']['example']).trim()
-                //}   else {
-                //    console.log('--- undefined')
                 }
             }
 
@@ -524,6 +502,19 @@ function parseRaml(data,filename, request, response, next){
                 docitem.displayName = data["documentation"][i]["title"];
                 tempContent = data["documentation"][i]['content']
                 tempContent = marked(tempContent)
+                while(tempContent.indexOf('··')>-1){
+                    var indexBefore = tempContent.indexOf('··1.')-1
+                    var indexAfter = tempContent.indexOf('</li>',indexBefore)
+                    var splitContent = tempContent.substring(indexBefore,indexAfter)
+                    var contentBefore = tempContent.substring(0,indexBefore)
+                    var contentAfter = tempContent.substring(indexAfter)
+                    console.log(',,,',splitContent)
+                    /*reformating the sub ol*/
+                    splitContent = '<ol><li>'+splitContent.substring(splitContent.indexOf('.')+1)+'</li></ol>'
+                    splitContent = splitContent.replace(/··[0-9]+./g,'</li><li>')
+                    console.log('---',splitContent)
+                    tempContent = contentBefore + splitContent + contentAfter
+                }
                 //while(tempContent.indexOf('··')>-1){
                 //    var indexBefore = tempContent.indexOf('··1.')
                 //    var indexAfter = tempContent.substring(indexBefore+1).indexOf('</li>')
@@ -666,9 +657,11 @@ function preprocessRamlJson(data,params){
                 title:'Authentication',
                 content: textAuth
             }
+            console.log(authentication)
             var documentation = updatedData["documentation"]
             documentation.splice(index,1,authentication)
             updatedData["documentation"] = documentation
+            console.log(updatedData["documentation"])
         }
     }
     if(quickstart!==undefined && quickstart!=='no'){
