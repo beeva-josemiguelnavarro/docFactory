@@ -21,13 +21,169 @@
             <div class="col-md-10 col-md-offset-1">
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#pane1" data-toggle="tab" ng-click="option=options[0]">Upload</a></li>
-                        <li><a href="#pane2" data-toggle="tab" ng-click="option=options[1]">Local</a></li>
-                        <li><a href="#pane3" data-toggle="tab" ng-click="option=options[2]">Online</a></li>
-                        <li><a href="#pane4" data-toggle="tab" ng-click="option=options[3]">Documetations generated</a></li>
+                        <li class="active"><a href="#pane1" data-toggle="tab" ng-click="option=options[1]">Local</a></li>
+                        <li><a href="#pane2" data-toggle="tab" ng-click="option=options[2]">Online</a></li>
+                        <li><a href="#pane3" data-toggle="tab" ng-click="option=options[3]">Documetations generated</a></li>
+                        <li><a href="#pane4" data-toggle="tab" ng-click="option=options[0]">Upload</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="pane1" class="tab-pane active">
+                            <form class="form-horizontal" name="localForm">
+                                <div class="form-group">
+                                    <label for="raml" class="control-label col-sm-2" >RAML Path</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="raml" class="form-control" ng-model="myData.pathFile" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="baseuri" class="form-control" ng-model="myData.baseuri">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="environment" class="form-control" ng-model="myData.environment">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
+                                    <div class="col-sm-10">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myData.quickstart" value="no"> No
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myData.quickstart" value="general" checked> General
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myData.quickstart" value="paystats"> PayStats
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit"  class="btn btn-default" ng-disabled="localForm.$invalid" ng-click="sendFormLocal()">GENERATE DOC</button>
+                                </div>
+                            </form>
+                            <hr>
+                            <div class="raml-files" ng-if="ramls">
+                                <h4>Files in the server</h4>
+                                <p>Click on a name to preload the RAML path field</p>
+                                <ul>
+                                    <li ng-repeat="raml in ramls"><a class="file-link" ng-click="myData.pathFile = raml.name" ng-class="{active:raml.name==myData.pathFile}" >{{raml.name}}</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="row code" ng-if="!parsing && parsedDocumentation!=''">
+                                <pre>{{parsedDocumentation}}</pre>
+                            </div>
+                            <div class="row code" ng-if="parsing && !parsingError">
+                                <pre>Generating the doc</pre>
+                            </div>
+                            <div class="row code" ng-if="!parsing && parsingError">
+                                <pre>Error generating the doc</pre>
+                            </div>
+                        </div>
+                        <div id="pane2" class="tab-pane">
+                            <form class="form-horizontal" name="onlineForm">
+                                <div class="form-group">
+                                    <label for="raml" class="control-label col-sm-2" >RAML URL</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="raml" class="form-control" ng-model="myDataOnline.pathFile" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="overviewLink" class="form-control" ng-model="myDataOnline.overviewLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="apiName" class="form-control" ng-model="myDataOnline.apiName" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="termsLink" class="form-control" ng-model="myDataOnline.termsLink" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="baseuri" class="form-control" ng-model="myDataOnline.baseuri">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" name="environment" class="form-control" ng-model="myDataOnline.environment">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
+                                    <div class="col-sm-10">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myDataOnline.quickstart" value="no"> No
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myDataOnline.quickstart" value="general" checked> General
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myDataOnline.quickstart" value="paystats"> PayStats
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()" ng-disabled="onlineForm.$invalid" >GENERATE DOC</button>
+                                </div>
+                            </form>
+                            <hr>
+                            <div class="row code" ng-if="!parsingOnline && parsedDocumentationOnline!=''">
+                                <pre>{{parsedDocumentationOnline}}</pre>
+                            </div>
+                            <div class="row code" ng-if="parsingOnline && !parsingOnlineError">
+                                <pre>Generating the doc</pre>
+                            </div>
+                            <div class="row code" ng-if="!parsingOnline && parsingOnlineError">
+                                <pre>Error generating the doc</pre>
+                            </div>
+                        </div>
+                        <div id="pane3" class="tab-pane">
+                            <h4>Documentations generated in the server</h4>
+                            <div ng-if="ready">
+                                <ul>
+                                    <li ng-repeat="file in files" ><a class="file-link" ng-class="{active:file.url==documentationSelected}" href="" ng-click="getDocumentation(file.url)">{{file.name}}</a></li>
+                                </ul>
+                            </div>
+                            <div ng-if="!ready">
+                                LOADING...
+                            </div>
+                            <div class="row code" ng-if="ready && documentation!=''">
+                                <pre>{{documentation}}</pre>
+                            </div>
+                        </div>
+                        <div id="pane4" class="tab-pane">
                             <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data" name="uploadForm">
                                 <div class="form-group">
                                     <div class="row">
@@ -104,9 +260,9 @@
                                                     Files uploaded:
                                                     <p ng-if="itemsUploaded.length<=0">No items</p>
                                                     <p ng-if="itemsUploaded>0">
-                                                        <ul>
-                                                            <li ng-repeat="item in itemsUploaded">{{item}}</li>
-                                                        </ul>
+                                                    <ul>
+                                                        <li ng-repeat="item in itemsUploaded">{{item}}</li>
+                                                    </ul>
                                                     </p>
                                                 </div>
                                             </div>
@@ -114,162 +270,6 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div id="pane2" class="tab-pane">
-                            <form class="form-horizontal" name="localForm">
-                                <div class="form-group">
-                                    <label for="raml" class="control-label col-sm-2" >RAML Path</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="raml" class="form-control" ng-model="myData.pathFile" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="baseuri" class="form-control" ng-model="myData.baseuri">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="environment" class="form-control" ng-model="myData.environment">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
-                                    <div class="col-sm-10">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myData.quickstart" value="no"> No
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myData.quickstart" value="general" checked> General
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myData.quickstart" value="paystats"> PayStats
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <button type="submit"  class="btn btn-default" ng-disabled="localForm.$invalid" ng-click="sendFormLocal()">GENERATE DOC</button>
-                                </div>
-                            </form>
-                            <hr>
-                            <div class="raml-files" ng-if="ramls">
-                                <h4>Files in the server</h4>
-                                <p>Click on a name to preload the RAML path field</p>
-                                <ul>
-                                    <li ng-repeat="raml in ramls"><a class="file-link" ng-click="myData.pathFile = raml.name" ng-class="{active:raml.name==myData.pathFile}" >{{raml.name}}</a></li>
-                                </ul>
-                            </div>
-
-                            <div class="row code" ng-if="!parsing && parsedDocumentation!=''">
-                                <pre>{{parsedDocumentation}}</pre>
-                            </div>
-                            <div class="row code" ng-if="parsing && !parsingError">
-                                <pre>Generating the doc</pre>
-                            </div>
-                            <div class="row code" ng-if="!parsing && parsingError">
-                                <pre>Error generating the doc</pre>
-                            </div>
-                        </div>
-                        <div id="pane3" class="tab-pane">
-                            <form class="form-horizontal" name="onlineForm">
-                                <div class="form-group">
-                                    <label for="raml" class="control-label col-sm-2" >RAML URL</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="raml" class="form-control" ng-model="myDataOnline.pathFile" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="overviewLink" class="form-control" ng-model="myDataOnline.overviewLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="apiName" class="form-control" ng-model="myDataOnline.apiName" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="termsLink" class="form-control" ng-model="myDataOnline.termsLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="baseuri" class="form-control" ng-model="myDataOnline.baseuri">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="environment" class="form-control" ng-model="myDataOnline.environment">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
-                                    <div class="col-sm-10">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myDataOnline.quickstart" value="no"> No
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myDataOnline.quickstart" value="general" checked> General
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myDataOnline.quickstart" value="paystats"> PayStats
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()" ng-disabled="onlineForm.$invalid" >GENERATE DOC</button>
-                                </div>
-                            </form>
-                            <hr>
-                            <div class="row code" ng-if="!parsingOnline && parsedDocumentationOnline!=''">
-                                <pre>{{parsedDocumentationOnline}}</pre>
-                            </div>
-                            <div class="row code" ng-if="parsingOnline && !parsingOnlineError">
-                                <pre>Generating the doc</pre>
-                            </div>
-                            <div class="row code" ng-if="!parsingOnline && parsingOnlineError">
-                                <pre>Error generating the doc</pre>
-                            </div>
-                        </div>
-                        <div id="pane4" class="tab-pane">
-                            <h4>Documentations generated in the server</h4>
-                            <div ng-if="ready">
-                                <ul>
-                                    <li ng-repeat="file in files" ><a class="file-link" ng-class="{active:file.url==documentationSelected}" href="" ng-click="getDocumentation(file.url)">{{file.name}}</a></li>
-                                </ul>
-                            </div>
-                            <div ng-if="!ready">
-                                LOADING...
-                            </div>
-                            <div class="row code" ng-if="ready && documentation!=''">
-                                <pre>{{documentation}}</pre>
-                            </div>
                         </div>
                     </div><!-- /.tab-content -->
                 </div><!-- /.tabbable -->

@@ -80,7 +80,7 @@ function toFile(file, content){
 }
 
 function replaceCharacteresInAnchor(name){
-    return name.toLowerCase().replace('.','').replace('\'','').replace(' & ',' ').replace('&','').replace(/\//g,'-').replace(/\{/g,'').replace(/\}/g,'').trim().split(' ').join('-');
+    return name.toLowerCase().replace('.','').replace('\'','').replace(' & ',' ').replace('&','').replace(/\//g,'-').replace(/\{/g,'').replace(/\(/g,'').replace(/\)/g,'').replace(/\}/g,'').trim().split(' ').join('-');
 }
 function generateAnchor(name){
     //console.log('_NAME: '.red,name);
@@ -94,28 +94,36 @@ function generateAnchor(name){
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
     uriResolved = fullUri //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
-    for (key in ramlData.baseUriParameters) {
-        //console.log(key, ramlData.baseUriParameters[key])
-        if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
-            whatIsIt(ramlData.baseUriParameters[key]["enum"]) == "undefined"){
-            throw "BaseUriParams must have 'example' value or enum. {"+key+"} " + fullUri;
-        }
-        tempvaluri = "";
-        if (whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined") {
-            tempvaluri = ramlData.baseUriParameters[key]["enum"][0];
-        } else {
-            tempvaluri = ramlData.baseUriParameters[key]["example"]
-        }
-        uriResolved = uriResolved.replace("{" + key + "}", tempvaluri);
-    }
+    console.log(fullUri)
+    console.log(fullUri)
+    //for (key in ramlData.baseUriParameters) {
+    //    //console.log(key, ramlData.baseUriParameters[key])
+    //    if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
+    //        whatIsIt(ramlData.baseUriParameters[key]["enum"]) == "undefined"  &&
+    //        whatIsIt(uriParams[key]["deafult"]) == "undefined"){
+    //        throw "BaseUriParams must have 'example' value or enum. {"+key+"} " + fullUri;
+    //    }
+    //    tempvaluri = "";
+    //    if (whatIsIt(ramlData.baseUriParameters[key]["deafult"]) != "undefined") {
+    //        tempvaluri = ramlData.baseUriParameters[key]["deafult"];
+    //    } else if (whatIsIt(ramlData.baseUriParameters[key]["enum"]) != "undefined") {
+    //        tempvaluri = ramlData.baseUriParameters[key]["enum"][0];
+    //    } else{
+    //        tempvaluri = ramlData.baseUriParameters[key]["example"]
+    //    }
+    //    uriResolved = uriResolved.replace("{" + key + "}", tempvaluri);
+    //}
     for (key in uriParams) {
         if(whatIsIt(uriParams[key]["example"]) == "undefined" &&
-            whatIsIt(uriParams[key]["enum"]) == "undefined"){
+            whatIsIt(uriParams[key]["enum"]) == "undefined" &&
+            whatIsIt(uriParams[key]["deafult"]) == "undefined"){
             throw "URIParams must have 'example' value or enum. {"+uriParams[key]["key"]+"} "+ fullUri;
         }
         tempvaluri = "";
-        if (whatIsIt(uriParams[key]["example"]) == "undefined") {
+        if (whatIsIt(uriParams[key]["enum"]) != "undefined") {
             tempvaluri = uriParams[key]["enum"][0];
+        } else if (whatIsIt(uriParams[key]["default"]) != "undefined") {
+            tempvaluri = uriParams[key]["default"];
         } else {
             tempvaluri = uriParams[key]["example"]
         }
@@ -140,12 +148,15 @@ function resolveUris(ramlData, fullUri, uriParams) {
             var tempUri = uriResolved;
             for (key in ramlData.baseUriParameters) {
                 if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
-                    whatIsIt(ramlData.baseUriParameters[key]["enum"]) == "undefined"){
+                    whatIsIt(ramlData.baseUriParameters[key]["enum"]) == "undefined" &&
+                    whatIsIt(ramlData.baseUriParameters[key]["default"]) == "undefined"){
                     throw "BaseUriParams must have 'example' value or enum. {"+key+"} " + fullUri;
                 }
                 if(key != 'env'){
                     var paramValue;
-                    if (whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined") {
+                    if (whatIsIt(ramlData.baseUriParameters[key]["default"]) != "undefined") {
+                        paramValue = ramlData.baseUriParameters[key]["default"];
+                    } else if (whatIsIt(ramlData.baseUriParameters[key]["enum"]) != "undefined") {
                         paramValue = ramlData.baseUriParameters[key]["enum"][0];
                     } else {
                         paramValue = ramlData.baseUriParameters[key]["example"]
@@ -164,6 +175,8 @@ function resolveUris(ramlData, fullUri, uriParams) {
                     //console.log(tempUri.replace("{" + key + "}", ramlData.baseUriParameters["env"]["example"]))
                     uris.push(tempUri.replace("{env}", ramlData.baseUriParameters["env"]["example"]))
                 }
+            } else {
+                uris.push(tempUri)
             }
         }
     }
@@ -254,9 +267,17 @@ function formatedApiMarket(compiledHtml){
         compiledHtml = compiledHtml.replace('<ul>','<ul class="api__documentation__unordered-list">');
     while(compiledHtml.indexOf('<ol>')>-1)
         compiledHtml = compiledHtml.replace('<ol>','<ol class="api__documentation__ordered-list">');
+    while(compiledHtml.indexOf('<pre><code')>-1){
+        compiledHtml = compiledHtml.replace('<pre><code','<pre class="example__code-container example__code-container-with-code"><code');
+        compiledHtml = compiledHtml.replace(/<code class="/g, "<pre class=\"prettyprint_json ");
+        compiledHtml = compiledHtml.replace(/<\/code>/g, "</pre>");
+    }
     while(compiledHtml.indexOf('<pre>')>-1)
-        compiledHtml = compiledHtml.replace('<pre>','<pre class="example__code-container">')
+        compiledHtml = compiledHtml.replace('<pre>','<pre class="example__code-container">');
     //compiledHtml = removeIds(compiledHtml)
+    if(compiledHtml.indexOf('class="lang-JSON"')>-1)
+        console.log(compiledHtml)
+
     return compiledHtml;
 }
 
@@ -354,6 +375,8 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
             for(var res in omethod.responses){
+                console.log('body 1')
+                console.log(omethod.responses)
                 if(omethod.responses[res].body!==undefined && omethod.responses[res].body['application/json']!==undefined){
                     omethod.responses[res].body['application/json']['formatedExample']=syntaxHighlight(omethod.responses[res].body['application/json']['example']).trim()
                 }
@@ -374,9 +397,11 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
 
             if(omethod.method == "post" && omethod.body && omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']){
                 dataobject.postFormPars = omethod.body['application/x-www-form-urlencoded']['formParameters'];
+                console.log('body 2')
                 //console.log("BODY", dataobject.postBodyPars);
             }
             else if(omethod.method == "post"){
+                console.log('body 3')
                 dataobject.postBodyPars = omethod.body;
                 //console.log(omethod.body);
             }
@@ -423,17 +448,20 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             //console.log('point3')
 
             if(whatIsIt(omethod.body) == "undefined"){
+                console.log('body 4')
                 dataobject["curlexample"] = compileTemplate(dataobject, "templates/code/example.nobody.curl");
                 dataobject["javaexample"] = compileTemplate(dataobject, "templates/code/example.nobody.java");
                 dataobject["pythexample"] = compileTemplate(dataobject, "templates/code/example.nobody.py");
             }
             else {
                 if(omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']){
+                    console.log('body 5')
                     dataobject["curlexample"] = compileTemplate(dataobject, "templates/code/example.form.curl");
                     dataobject["javaexample"] = compileTemplate(dataobject, "templates/code/example.form.java");
                     dataobject["pythexample"] = compileTemplate(dataobject, "templates/code/example.form.py");
                 }
                 else{
+                    console.log('body 6')
                     dataobject["curlexample"] = compileTemplate(dataobject, "templates/code/example.body.curl");
                     dataobject["javaexample"] = compileTemplate(dataobject, "templates/code/example.body.java");
                     dataobject["pythexample"] = compileTemplate(dataobject, "templates/code/example.body.py");
@@ -495,6 +523,7 @@ function parseRaml(data,filename, request, response, next){
         if(whatIsIt(data["baseUri"])!="undefined" &&  data["baseUri"].length>0)
             dataHead["api_description"]['uris']=resolveUris(data,data.baseUri,data.baseUriParameters);
         dataHead["baseUri"] = resolveFullURI(data,data.baseUri,null);
+        console.log('----0')
 
         if(whatIsIt(data["documentation"])!="undefined")
             for(i=0;i<data["documentation"].length;i++){
@@ -554,9 +583,10 @@ function parseRaml(data,filename, request, response, next){
         all_templates = "";
         all_index = "";
         all_summary = "";
-
+console.log('----1')
         //parseMainResources(data,dataHead["baseUri"])
         parseResources(data, dataHead["baseUri"], data["resources"], "", null);
+        console.log('----2')
 
         var template = "";
 
@@ -722,7 +752,7 @@ router.get('/file',function (request, response, next) {
         console.log('parse')
         parseRaml(preprocessRamlJson(data,uriParts.query),filename, request, response,next)
     }, function(error) {
-        console.error("/online/ Error loading online file -".red, error.context.cyan, "," + error.message);
+        console.error("/local file/ Error loading local file -".red, error.context.cyan, "," + error.message);
         sendError(error, response)
     });
 

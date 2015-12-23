@@ -28,14 +28,14 @@ app.get('/', function (request, response, next) {
     response.sendFile(path.join(__dirname, 'views/main.html'))
 });
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '.jpg') //Appending .jpg
-    }
-})
+//var storage = multer.diskStorage({
+//    destination: function (req, file, cb) {
+//        cb(null, 'uploads/')
+//    },
+//    filename: function (req, file, cb) {
+//        cb(null, Date.now() + '.jpg') //Appending .jpg
+//    }
+//})
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {

@@ -3,7 +3,7 @@
 angular.module('docFactoryApp',['angularFileUpload'])
     .controller('docFactoryController',['$scope','$http' ,'FileUploader',function($scope, $http,FileUploader){
         $scope.options = ['upload','local','online','documentations']
-        $scope.option = $scope.options[0];
+        $scope.option = $scope.options[1];
         $scope.files = []
         $scope.ready = true
         $scope.myData = {
