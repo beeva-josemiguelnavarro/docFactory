@@ -10,7 +10,6 @@ var swig = require('swig');
 var marked = require('marked');
 var colors = require("colors");
 var raml2html = require('raml2html');
-var pretty = require('js-object-pretty-print').pretty;
 
 var all_templates = "";
 var all_index = "";
