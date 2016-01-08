@@ -690,11 +690,14 @@ function preprocessRamlJson(data, params) {
     }
     var documentation = updatedData["documentation"]
     var indexTerms = -1
+    var indexResource = -1
     if (updatedData["documentation"] === undefined)
         updatedData["documentation"] = []
     for (var index in updatedData["documentation"]) {
         if (updatedData["documentation"][index].title.toLowerCase().indexOf('terms') > -1)
             indexTerms = index
+        else if (updatedData["documentation"][index].title.toLowerCase().indexOf('resources') > -1)
+            indexResource = index
         if (quickstart === 'paystats' && updatedData["documentation"][index].title.indexOf('Authentication') > -1) {
             var textAuth = fs.readFileSync(__dirname + "/../" + 'templates/2LEGSOAUTH.md', 'utf8');
             var authentication = {
@@ -737,6 +740,14 @@ function preprocessRamlJson(data, params) {
             content: textTerms
         }
         documentation.push(terms)
+    }
+    if (indexResource < 0) {
+        var textResources = fs.readFileSync(__dirname + "/../" + 'templates/RESOURCES.md', 'utf8');
+        var resources = {
+            title: 'Related resources',
+            content: resources
+        }
+        documentation.push(resources)
     }
     updatedData["documentation"] = documentation
     return updatedData
