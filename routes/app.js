@@ -10,7 +10,6 @@ var swig = require('swig');
 var marked = require('marked');
 var colors = require("colors");
 var raml2html = require('raml2html');
-var pretty = require('js-object-pretty-print').pretty;
 
 var all_templates = "";
 var all_index = "";
@@ -94,7 +93,6 @@ function generateAnchor(name){
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
     uriResolved = fullUri //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
-    console.log(fullUri)
     console.log(fullUri)
     //for (key in ramlData.baseUriParameters) {
     //    //console.log(key, ramlData.baseUriParameters[key])
@@ -269,8 +267,9 @@ function formatedApiMarket(compiledHtml){
         compiledHtml = compiledHtml.replace('<ol>','<ol class="api__documentation__ordered-list">');
     while(compiledHtml.indexOf('<pre><code')>-1){
         compiledHtml = compiledHtml.replace('<pre><code','<pre class="example__code-container example__code-container-with-code"><code');
-        compiledHtml = compiledHtml.replace(/<code class="/g, "<pre class=\"prettyprint_json ");
-        compiledHtml = compiledHtml.replace(/<\/code>/g, "</pre>");
+        compiledHtml = compiledHtml.replace('<code class="', "<pre class=\"prettyprint_json ");
+        compiledHtml = compiledHtml.replace('<code>', '<pre class="prettyprint_json">');
+        compiledHtml = compiledHtml.replace('</code>', "</pre>");
     }
     while(compiledHtml.indexOf('<pre>')>-1)
         compiledHtml = compiledHtml.replace('<pre>','<pre class="example__code-container">');
@@ -380,11 +379,14 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 if(omethod.responses[res].body!==undefined && omethod.responses[res].body['application/json']!==undefined){
                     omethod.responses[res].body['application/json']['formatedExample']=syntaxHighlight(omethod.responses[res].body['application/json']['example']).trim()
                 }
+
+                console.log('--X00')
             }
 
             dataobject.methodData = omethod;
             //console.log(omethod)
 
+            console.log('--X01')
             if(whatIsIt(omethod.method) == "undefined"){
                 throw "Undefined method name for " + + JSON.stringify(resources[resourceKey], null, 3);
             }
@@ -395,6 +397,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject.baseUri = baseUri;
             dataobject.fullUri = baseUri + currentPath;
 
+            console.log('--X02')
             if(omethod.method == "post" && omethod.body && omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']){
                 dataobject.postFormPars = omethod.body['application/x-www-form-urlencoded']['formParameters'];
                 console.log('body 2')
@@ -429,23 +432,26 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 dataobject.queryParams.push(oqueryparam);
             }
 
+            console.log('--X04')
             //Generate examples for curl and java
             dataobject["resolvedUri"] = resolveFullURI(ramlData, dataobject.fullUri, dataobject.uriParams)
+
+            console.log('--X05')
             qpars = "";
             for(key in dataobject.queryParams){
                 if(dataobject.queryParams[key]["required"])
                     qpars += dataobject.queryParams[key]["key"]+"="+dataobject.queryParams[key]["example"]+"&";
             }
-            //console.log('point1')
+            console.log('point1')
             dataobject["resolvedUriParams"]=dataobject["resolvedUri"]+(qpars!=""?"?"+qpars.substring(0, qpars.length-1) :"");
             dataobject["url"] = {}
             tempurl = dataobject["resolvedUri"].split(":");
             dataobject["url"]["protocol"] = tempurl[0];
-            //console.log('point2',tempurl)
+            console.log('point2',tempurl)
             tempurl = tempurl[1].substring(2);
             dataobject["url"]["host"] = tempurl.substring(0, tempurl.indexOf("/"));
             dataobject["url"]["path"] = tempurl.substring(tempurl.indexOf("/"));
-            //console.log('point3')
+            console.log('point3')
 
             if(whatIsIt(omethod.body) == "undefined"){
                 console.log('body 4')
