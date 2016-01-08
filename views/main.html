@@ -2,97 +2,120 @@
 <html>
 <head>
     <title>DocFactory</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <link rel='stylesheet' href='/stylesheets/main.css' />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <link rel='stylesheet' href='/stylesheets/main.css'/>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="javascripts/angular-file-upload.min.js"></script>
     <script src="javascripts/docFactoryApp.js"></script>
 </head>
 <body ng-app="docFactoryApp">
-    <div class="container-fluid" ng-controller="docFactoryController">
-        <div class="text-center">
-            <img src="images/banner.jpg" class="banner-doc_factory" alt="DocFactory">
-            <!--
-            <h1>DocFactory</h1>
-            -->
-            <hr>
-        </div>
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#pane1" data-toggle="tab" ng-click="option=options[1]">Local</a></li>
-                        <li><a href="#pane2" data-toggle="tab" ng-click="option=options[2]">Online</a></li>
-                        <li><a href="#pane3" data-toggle="tab" ng-click="option=options[3]">Documetations generated</a></li>
-                        <li><a href="#pane4" data-toggle="tab" ng-click="option=options[0]">Upload</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div id="pane1" class="tab-pane active">
-                            <form class="form-horizontal" name="localForm">
-                                <div class="form-group">
-                                    <label for="raml" class="control-label col-sm-2" >RAML Path</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="raml" class="form-control" ng-model="myData.pathFile" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="overviewLink" class="form-control" ng-model="myData.overviewLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="apiName" class="form-control" ng-model="myData.apiName" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink" required>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="baseuri" class="form-control" ng-model="myData.baseuri">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="environment" class="form-control" ng-model="myData.environment">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
-                                    <div class="col-sm-10">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myData.quickstart" value="no"> No
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myData.quickstart" value="general" checked> General
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myData.quickstart" value="paystats"> PayStats
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <button type="submit"  class="btn btn-default" ng-disabled="localForm.$invalid" ng-click="sendFormLocal()">GENERATE DOC</button>
-                                </div>
-                            </form>
-                            <hr>
-                            <div class="raml-files" ng-if="ramls">
-                                <h4>Files in the server</h4>
-                                <p>Click on a name to preload the RAML path field</p>
-                                <ul>
-                                    <li ng-repeat="raml in ramls"><a class="file-link" ng-click="myData.pathFile = raml.name" ng-class="{active:raml.name==myData.pathFile}" >{{raml.name}}</a></li>
-                                </ul>
-                            </div>
+<div class="container-fluid" ng-controller="docFactoryController">
+    <div class="text-center">
+        <img src="images/banner.jpg" class="banner-doc_factory" alt="DocFactory">
+        <!--
+        <h1>DocFactory</h1>
+        -->
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#pane1" data-toggle="tab" ng-click="option=options[1]">Local</a></li>
+                    <li><a href="#pane2" data-toggle="tab" ng-click="option=options[2]">Online</a></li>
+                    <li><a href="#pane3" data-toggle="tab" ng-click="option=options[3]">Documetations generated</a></li>
+                    <li><a href="#pane4" data-toggle="tab" ng-click="option=options[0]">Upload</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="pane1" class="tab-pane active">
+                        <form class="form-horizontal" name="localForm">
+                            <div class="form-group">
+                                <label for="raml" class="control-label col-sm-2">RAML Path</label>
 
-                            <div class="row code" ng-if="!parsing && parsedDocumentation!=''">
+                                <div class="col-sm-10">
+                                    <input type="text" name="raml" class="form-control" ng-model="myData.pathFile"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="overviewLink" class="control-label col-sm-2">Overview Link</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="overviewLink" class="form-control"
+                                           ng-model="myData.overviewLink" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apiName" class="control-label col-sm-2">Api Name</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="apiName" class="form-control" ng-model="myData.apiName"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="termsLink" class="control-label col-sm-2">Terms & Cond Link</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="termsLink" class="form-control" ng-model="myData.termsLink"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="baseuri" class="control-label col-sm-2">baseuri</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="baseuri" class="form-control" ng-model="myData.baseuri">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="environment" class="control-label col-sm-2">Environment</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="environment" class="form-control"
+                                           ng-model="myData.environment">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="quickstart" class="control-label col-sm-2">Quickstart Section</label>
+
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quickstart" id="quickstart_no"
+                                               ng-model="myData.quickstart" value="no"> No
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quickstart" id="quickstart_general"
+                                               ng-model="myData.quickstart" value="general" checked> General
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quickstart" id="quickstart_paystats"
+                                               ng-model="myData.quickstart" value="paystats"> PayStats
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-default" ng-disabled="localForm.$invalid"
+                                        ng-click="sendFormLocal()">GENERATE DOC
+                                </button>
+                            </div>
+                        </form>
+                        <hr>
+                        <div class="raml-files" ng-if="ramls">
+                            <h4>Files in the server</h4>
+
+                            <p>Click on a name to preload the RAML path field</p>
+                            <ul>
+                                <li ng-repeat="raml in ramls"><a class="file-link"
+                                                                 ng-click="myData.pathFile = raml.name"
+                                                                 ng-class="{active:raml.name==myData.pathFile}">{{raml.name}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="parsingContainer">
+                            <div class="row code documentationContainer" ng-if="!parsing && parsedDocumentation!=''">
                                 <pre>{{parsedDocumentation}}</pre>
                             </div>
                             <div class="row code" ng-if="parsing && !parsingError">
@@ -102,64 +125,85 @@
                                 <pre>Error generating the doc</pre>
                             </div>
                         </div>
-                        <div id="pane2" class="tab-pane">
-                            <form class="form-horizontal" name="onlineForm">
-                                <div class="form-group">
-                                    <label for="raml" class="control-label col-sm-2" >RAML URL</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="raml" class="form-control" ng-model="myDataOnline.pathFile" required>
-                                    </div>
+                    </div>
+                    <div id="pane2" class="tab-pane">
+                        <form class="form-horizontal" name="onlineForm">
+                            <div class="form-group">
+                                <label for="raml" class="control-label col-sm-2">RAML URL</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="raml" class="form-control" ng-model="myDataOnline.pathFile"
+                                           required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="overviewLink" class="control-label col-sm-2" >Overview Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="overviewLink" class="form-control" ng-model="myDataOnline.overviewLink" required>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="overviewLink" class="control-label col-sm-2">Overview Link</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="overviewLink" class="form-control"
+                                           ng-model="myDataOnline.overviewLink" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="apiName" class="control-label col-sm-2" >Api Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="apiName" class="form-control" ng-model="myDataOnline.apiName" required>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="apiName" class="control-label col-sm-2">Api Name</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="apiName" class="form-control"
+                                           ng-model="myDataOnline.apiName" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="termsLink" class="control-label col-sm-2" >Terms & Cond Link</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="termsLink" class="form-control" ng-model="myDataOnline.termsLink" required>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="termsLink" class="control-label col-sm-2">Terms & Cond Link</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="termsLink" class="form-control"
+                                           ng-model="myDataOnline.termsLink" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="baseuri" class="control-label col-sm-2" >baseuri</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="baseuri" class="form-control" ng-model="myDataOnline.baseuri">
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="baseuri" class="control-label col-sm-2">baseuri</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="baseuri" class="form-control"
+                                           ng-model="myDataOnline.baseuri">
                                 </div>
-                                <div class="form-group">
-                                    <label for="environment" class="control-label col-sm-2" >Environment</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" name="environment" class="form-control" ng-model="myDataOnline.environment">
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="environment" class="control-label col-sm-2">Environment</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" name="environment" class="form-control"
+                                           ng-model="myDataOnline.environment">
                                 </div>
-                                <div class="form-group">
-                                    <label for="quickstart" class="control-label col-sm-2" >Quickstart Section</label>
-                                    <div class="col-sm-10">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_no"  ng-model="myDataOnline.quickstart" value="no"> No
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_general"  ng-model="myDataOnline.quickstart" value="general" checked> General
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="quickstart" id="quickstart_paystats"  ng-model="myDataOnline.quickstart" value="paystats"> PayStats
-                                        </label>
-                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="quickstart" class="control-label col-sm-2">Quickstart Section</label>
+
+                                <div class="col-sm-10">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quickstart" id="quickstart_no"
+                                               ng-model="myDataOnline.quickstart" value="no"> No
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quickstart" id="quickstart_general"
+                                               ng-model="myDataOnline.quickstart" value="general" checked> General
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="quickstart" id="quickstart_paystats"
+                                               ng-model="myDataOnline.quickstart" value="paystats"> PayStats
+                                    </label>
                                 </div>
-                                <div class="text-center">
-                                    <button type="submit"  class="btn btn-default" ng-click="sendFormOnline()" ng-disabled="onlineForm.$invalid" >GENERATE DOC</button>
-                                </div>
-                            </form>
-                            <hr>
-                            <div class="row code" ng-if="!parsingOnline && parsedDocumentationOnline!=''">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-default" ng-click="sendFormOnline()"
+                                        ng-disabled="onlineForm.$invalid">GENERATE DOC
+                                </button>
+                            </div>
+                        </form>
+                        <hr>
+                        <div class="parsingContainer">
+                            <div class="row code documentationContainer"
+                                 ng-if="!parsingOnline && parsedDocumentationOnline!=''">
                                 <pre>{{parsedDocumentationOnline}}</pre>
                             </div>
                             <div class="row code" ng-if="parsingOnline && !parsingOnlineError">
@@ -169,117 +213,150 @@
                                 <pre>Error generating the doc</pre>
                             </div>
                         </div>
-                        <div id="pane3" class="tab-pane">
-                            <h4>Documentations generated in the server</h4>
-                            <div ng-if="ready">
-                                <ul>
-                                    <li ng-repeat="file in files" ><a class="file-link" ng-class="{active:file.url==documentationSelected}" href="" ng-click="getDocumentation(file.url)">{{file.name}}</a></li>
-                                </ul>
-                            </div>
-                            <div ng-if="!ready">
-                                LOADING...
-                            </div>
-                            <div class="row code" ng-if="ready && documentation!=''">
+                    </div>
+                    <div id="pane3" class="tab-pane">
+                        <h4>Documentations generated in the server</h4>
+
+                        <div ng-if="ready">
+                            <ul>
+                                <li ng-repeat="file in files"><a class="file-link"
+                                                                 ng-class="{active:file.url==documentationSelected}"
+                                                                 href="" ng-click="getDocumentation(file.url)">{{file.name}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div ng-if="!ready">
+                            LOADING...
+                        </div>
+                        <div class="parsingContainer">
+                            <div class="row code documentationContainer" ng-if="ready && documentation!=''">
                                 <pre>{{documentation}}</pre>
                             </div>
                         </div>
-                        <div id="pane4" class="tab-pane">
-                            <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data" name="uploadForm">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label for="raml" class="control-label col-sm-2 label-files" >FILES:</label>
-                                        <div class="col-sm-10">
-                                            <input type="file" nv-file-select="" uploader="uploader" multiple="">
-                                        </div>
+                    </div>
+                    <div id="pane4" class="tab-pane">
+                        <form method="post" class="form-horizontal" action="/upload" enctype="multipart/form-data"
+                              name="uploadForm">
+                            <div class="form-group">
+                                <div class="row">
+                                    <label for="raml" class="control-label col-sm-2 label-files">FILES:</label>
+
+                                    <div class="col-sm-10">
+                                        <input type="file" nv-file-select="" uploader="uploader" multiple="">
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-10 upload-zone">
-                                            <p>Queue length: {{ uploader.queue.length }}</p>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-10 upload-zone">
+                                        <p>Queue length: {{ uploader.queue.length }}</p>
 
-                                            <table class="table">
-                                                <thead>
-                                                <tr>
-                                                    <th width="50%">Name</th>
-                                                    <th ng-show="uploader.isHTML5">Size</th>
-                                                    <th ng-show="uploader.isHTML5">Progress</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr ng-repeat="item in uploader.queue">
-                                                    <td><strong>{{ item.file.name }}</strong></td>
-                                                    <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                                                    <td ng-show="uploader.isHTML5">
-                                                        <div class="progress" style="margin-bottom: 0;">
-                                                            <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                                                        <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                                                        <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
-                                                    </td>
-                                                    <td nowrap>
-                                                        <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                                            <span class="glyphicon glyphicon-upload"></span> Upload
-                                                        </button>
-                                                        <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                                                            <span class="glyphicon glyphicon-trash"></span> Remove
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-
-                                            <div>
-                                                <div>
-                                                    Queue progress:
-                                                    <div class="progress" style="">
-                                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th width="50%">Name</th>
+                                                <th ng-show="uploader.isHTML5">Size</th>
+                                                <th ng-show="uploader.isHTML5">Progress</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="item in uploader.queue">
+                                                <td><strong>{{ item.file.name }}</strong></td>
+                                                <td ng-show="uploader.isHTML5" nowrap>{{
+                                                    item.file.size/1024/1024|number:2 }} MB
+                                                </td>
+                                                <td ng-show="uploader.isHTML5">
+                                                    <div class="progress" style="margin-bottom: 0;">
+                                                        <div class="progress-bar" role="progressbar"
+                                                             ng-style="{ 'width': item.progress + '%' }"></div>
                                                     </div>
-                                                </div>
-                                                <div class="text-center">
-                                                    <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-                                                        <span class="glyphicon glyphicon-upload"></span> Upload all
+                                                </td>
+                                                <td class="text-center">
+                                                    <span ng-show="item.isSuccess"><i
+                                                            class="glyphicon glyphicon-ok"></i></span>
+                                                    <span ng-show="item.isCancel"><i
+                                                            class="glyphicon glyphicon-ban-circle"></i></span>
+                                                    <span ng-show="item.isError"><i
+                                                            class="glyphicon glyphicon-remove"></i></span>
+                                                </td>
+                                                <td nowrap>
+                                                    <button type="button" class="btn btn-success btn-xs"
+                                                            ng-click="item.upload()"
+                                                            ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                                        <span class="glyphicon glyphicon-upload"></span> Upload
                                                     </button>
-                                                    <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-                                                        <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                                                    <button type="button" class="btn btn-warning btn-xs"
+                                                            ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                                        <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                                                     </button>
-                                                    <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-                                                        <span class="glyphicon glyphicon-trash"></span> Remove all
+                                                    <button type="button" class="btn btn-danger btn-xs"
+                                                            ng-click="item.remove()">
+                                                        <span class="glyphicon glyphicon-trash"></span> Remove
                                                     </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div>
+                                            <div>
+                                                Queue progress:
+                                                <div class="progress" style="">
+                                                    <div class="progress-bar" role="progressbar"
+                                                         ng-style="{ 'width': uploader.progress + '%' }"></div>
                                                 </div>
                                             </div>
-                                            <hr>
+                                            <div class="text-center">
+                                                <button type="button" class="btn btn-success btn-s"
+                                                        ng-click="uploader.uploadAll()"
+                                                        ng-disabled="!uploader.getNotUploadedItems().length">
+                                                    <span class="glyphicon glyphicon-upload"></span> Upload all
+                                                </button>
+                                                <button type="button" class="btn btn-warning btn-s"
+                                                        ng-click="uploader.cancelAll()"
+                                                        ng-disabled="!uploader.isUploading">
+                                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-s"
+                                                        ng-click="uploader.clearQueue()"
+                                                        ng-disabled="!uploader.queue.length">
+                                                    <span class="glyphicon glyphicon-trash"></span> Remove all
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div>
                                             <div>
-                                                <div>
-                                                    Files uploaded:
-                                                    <p ng-if="itemsUploaded.length<=0">No items</p>
-                                                    <p ng-if="itemsUploaded>0">
-                                                    <ul>
-                                                        <li ng-repeat="item in itemsUploaded">{{item}}</li>
-                                                    </ul>
-                                                    </p>
-                                                </div>
+                                                Files uploaded:
+                                                <p ng-if="itemsUploaded.length<=0">No items</p>
+
+                                                <p ng-if="itemsUploaded>0">
+                                                <ul>
+                                                    <li ng-repeat="item in itemsUploaded">{{item}}</li>
+                                                </ul>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div><!-- /.tab-content -->
-                </div><!-- /.tabbable -->
-
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /.tab-content -->
             </div>
+            <!-- /.tabbable -->
+
         </div>
     </div>
+</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+        integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+        crossorigin="anonymous"></script>
+<script src="javascripts/clipboard.min.js"></script>
+<script src="main.js"></script>
 </body>
 </html>

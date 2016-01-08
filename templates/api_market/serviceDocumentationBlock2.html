@@ -1,4 +1,5 @@
 <article id="{{anchor}}">
+    <!-- Documentation -->
     <section class="api__documentation">
         <article>
             <div class="api__documentation__subtitle">
@@ -122,91 +123,114 @@
         </article>
         {% endif %}
     </section>
-
-
+    <!-- Example -->
     <section class="api__example">
-        <h1 class="example__title">{{path}}</h1>
+        <header class="api__example_header">
+            <h1 class="example__title">{{path}}</h1>
+        </header>
+        <article class="api__example_body">
+            <section class="api__example_body_example">
+                <header>
+                    <h2 class="example__subtitle--call-code">EXAMPLE</h2>
+                </header>
+                <div class="example__call-code">
+                    <div class="example__code-container language-java">
+                        <pre class="prettyprint">{{ javaexample }}</pre>
+                    </div>
 
-        <h2 class="example__subtitle--call-code">EXAMPLE</h2>
+                    <div class="example__code-container language-python hidden">
+                        <pre class="prettyprint">{{ pythexample }}</pre>
+                    </div>
 
-        <div class="example__call-code">
-            <div class="example__code-container language-java">
-                <pre class="prettyprint">{{ javaexample }}</pre>
-            </div>
-
-            <div class="example__code-container language-python hidden">
-                <pre class="prettyprint">{{ pythexample }}</pre>
-            </div>
-
-            <div class="example__code-container language-curl hidden">
-                <pre class="prettyprint"> {{ curlexample }}</pre>
-            </div>
-        </div>
-        <h2 class="example__subtitle--response">RESPONSE</h2>
-
-        <h3 class="example__subtitle--status-code">HTTP status code</h3>
-
-        <div class="example__status-codes">
-            <div class="example__status-codes-wrapper">
-
-                {% for httpCode,responses in methodData.responses %}
-                <span class="example__status-code example__status-code">{{httpCode}}</span>
-                {% endfor %}
-            </div>
-            {% for httpCode,responses in methodData.responses %}
-            <div class="example__info example__status-code__{{httpCode}} hidden">
-                {% if responses["description"] %}
-                <ul class="example__additional-info">
-                    <span class="example__info__block">
-                     <div class="example__info__text">
-                         {% autoescape false %} {{formatedApiMarket(renderMD(responses["description"]))}} {%
-                         endautoescape %}
-                     </div>
-                    </span>
-                </ul>
-                {% endif %}
-                {% for key,prop in responses["body"] %}
-                <div class="example__info__col">
-                    <span class="example__info__block">
-                        <label class="example__info__text">Example: </label>
-                    </span>
+                    <div class="example__code-container language-curl hidden">
+                        <pre class="prettyprint"> {{ curlexample }}</pre>
+                    </div>
                 </div>
-                <div class="example__info__col">
-                    <span class="example__info__block">
-                        <label class="example__info__text">Type: </label>
-                        <label class="example__info__text">{{key}}</label>
-                    </span>
+            </section>
+            <section class="api__example_body_response">
+                <header>
+                    <h2 class="example__subtitle--response">RESPONSE</h2>
+                </header>
+                <h3 class="example__subtitle--status-code">HTTP status code</h3>
+
+                <div class="example__status-codes">
+                    <section class="example__status-codes-wrapper response_codes">
+                        {% for httpCode,responses in methodData.responses %}
+                        <span class="example__status-code example__status-code">{{httpCode}}</span>
+                        {% endfor %}
+                    </section>
+                    {% for httpCode,responses in methodData.responses %}
+                    <section class="example__info example__status-code__{{httpCode}} hidden">
+                        {% if responses["description"] %}
+                        <section class="response_code_info">
+                            <ul class="example__additional-info">
+                            <span class="example__info__block">
+                             <div class="example__info__text">
+                                 {% autoescape false %}
+                                 {{formatedApiMarket(renderMD(responses["description"]))}}
+                                 {% endautoescape %}
+                             </div>
+                            </span>
+                            </ul>
+                        </section>
+                        {% endif %}
+                        {% for key,prop in responses["body"] %}
+                        <section class="response_body">
+                            <h3 class="example__subtitle--status-code">BODY</h3>
+
+                            <div class="example__info__col">
+                                <div class="example__info__block">
+                                    <label class="example__info__text">Example: </label>
+                                </div>
+                            </div>
+                            <div class="example__info__col">
+                                <div class="example__info__block">
+                                    <label class="example__info__text">Type: </label>
+                                    <label class="example__info__text">{{key}}</label>
+                                </div>
+                            </div>
+                            <div class="example__info___response_code">
+                                <pre class="example__json example__response--{{httpCode}} hidden prettyprint_json">
+                                {% if prop["formatedExample"] %}
+                                    {% autoescape false %} {{ prop["formatedExample"] }} {% endautoescape %}
+                                {% else %}
+                                    {{ prop["example"] }}
+                                {% endif %}
+                                </pre>
+                            </div>
+                        </section>
+                        {% endfor %}
+                        {% for key,prop in responses["headers"] %}
+                        <section class="response_header">
+                            <h3 class="example__subtitle--status-code">BODY</h3>
+
+                            <div class="example__info__col">
+                                <div class="example__info__block">
+                                    <label class="example__info__text">Example: </label>
+                                </div>
+                            </div>
+                            <div class="example__info__col">
+                                <div class="example__info__block">
+                                    <label class="example__info__text">Type: </label>
+                                    <label class="example__info__text">{{key}}</label>
+                                </div>
+                            </div>
+
+                            <div class="example__info___response_code">
+                                <pre class="example__json example__response--{{httpCode}} hidden prettyprint_json">
+                                {% if prop["formatedExample"] %}
+                                    {% autoescape false %} {{ prop["formatedExample"] }} {% endautoescape %}
+                                {% else %}
+                                    {{ prop["example"] }}
+                                {% endif %}
+                                </pre>
+                            </div>
+                        </section>
+                        {% endfor %}
+                    </section>
+                    {% endfor %}
                 </div>
-                 <span class="example__json example__response--{{httpCode}} hidden">
-                 {% if prop["formatedExample"] %}
-                     <pre class="prettyprint_json">{% autoescape false %} {{ prop["formatedExample"] }} {% endautoescape %}</pre>
-                 {% else %}
-                     <pre class="prettyprint_json"> {{ prop["example"] }}</pre>
-                 {% endif %}
-                 </span>
-                {% endfor %}
-                {% for key,prop in responses["headers"] %}
-                <div class="example__info__col">
-                    <span class="example__info__block">
-                        <label class="example__info__text">Example: </label>
-                    </span>
-                </div>
-                <div class="example__info__col">
-                    <span class="example__info__block">
-                        <label class="example__info__text">Type: </label>
-                        <label class="example__info__text">{{key}}</label>
-                    </span>
-                </div>
-                 <span class="example__json example__response--{{httpCode}} hidden">
-                 {% if prop["formatedExample"] %}
-                     <pre class="prettyprint_json">{% autoescape false %} {{ prop["formatedExample"] }} {% endautoescape %}</pre>
-                 {% else %}
-                     <pre class="prettyprint_json"> {{ prop["example"] }}</pre>
-                 {% endif %}
-                 </span>
-                {% endfor %}
-            </div>
-            {% endfor %}
-        </div>
+            </section>
+        </article>
     </section>
 </article>
