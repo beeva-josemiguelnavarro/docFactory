@@ -98,7 +98,7 @@
             {% for key,prop in uriParams %}
             <div class="api__documentation__parameters">
                 <div class="col--first"><span class="parameters__parameter">{{prop["key"]}}</span> <span
-                        class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} <label
+                        class="parameters__default">{%if prop["required"]%}required {%else%}optional {%endif%}<label
                         class="parameters__type">({{prop.type}})</label>
                     {% if prop["enum"]%}
                     <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
@@ -142,6 +142,12 @@
                 <pre class="prettyprint"> {{ curlexample }}</pre>
             </div>
         </div>
+        {if postBodyPars%}
+        <h2 class="example__subtitle--response">REQUEST</h2>
+
+        <h3 class="example__subtitle--status-code">Schema</h3>
+
+        {% endif %}
         <h2 class="example__subtitle--response">RESPONSE</h2>
 
         <h3 class="example__subtitle--status-code">HTTP status code</h3>

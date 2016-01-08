@@ -479,7 +479,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject["addSpaces"] = addSpaces;
             dataobject["formatedApiMarket"] = formatedApiMarket;
 
-            //console.log(JSON.stringify(dataobject, null, 3))
+            console.log(JSON.stringify(dataobject, null, 3))
 
             all_templates += compileTemplate(dataobject, "templates/api_market/serviceDocumentationBlock.html");
 
