@@ -93,19 +93,19 @@ function generateAnchor(name) {
 }
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
+    console.log('resolvefulluris')
     uriResolved = fullUri //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
-    console.log(fullUri)
-    console.log(fullUri)
+    console.log(fullUri,ramlData.baseUriParameters)
     for (key in ramlData.baseUriParameters) {
         //console.log(key, ramlData.baseUriParameters[key])
         if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
             whatIsIt(ramlData.baseUriParameters[key]["enum"]) == "undefined"  &&
-            whatIsIt(uriParams[key]["deafult"]) == "undefined"){
+            whatIsIt(ramlData.baseUriParameters[key]["default"]) == "undefined"){
             throw "BaseUriParams must have 'example' value or enum. {"+key+"} " + fullUri;
         }
         tempvaluri = "";
-        if (whatIsIt(ramlData.baseUriParameters[key]["deafult"]) != "undefined") {
-            tempvaluri = ramlData.baseUriParameters[key]["deafult"];
+        if (whatIsIt(ramlData.baseUriParameters[key]["default"]) != "undefined") {
+            tempvaluri = ramlData.baseUriParameters[key]["default"];
         } else if (whatIsIt(ramlData.baseUriParameters[key]["enum"]) != "undefined") {
             tempvaluri = ramlData.baseUriParameters[key]["enum"][0];
         } else{
@@ -114,6 +114,7 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
         uriResolved = uriResolved.replace("{" + key + "}", tempvaluri);
     }
     for (key in uriParams) {
+        //console.log(uriParams[key])
         if (whatIsIt(uriParams[key]["example"]) == "undefined" &&
             whatIsIt(uriParams[key]["enum"]) == "undefined" &&
             whatIsIt(uriParams[key]["deafult"]) == "undefined") {
@@ -133,7 +134,9 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
 }
 
 function resolveUris(ramlData, fullUri, uriParams) {
+    console.log('resolveuris')
     uriResolved = fullUri; //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
+    console.log('full uri',fullUri)
     uris = [];
     if (whatIsIt(uriParams) == "undefined") {
         console.log('uriparams undefined');
@@ -375,13 +378,10 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
             for (var res in omethod.responses) {
-                console.log('body 1');
-                console.log(omethod.responses);
+                //console.log(omethod.responses);
                 if (omethod.responses[res].body !== undefined && omethod.responses[res].body['application/json'] !== undefined) {
                     omethod.responses[res].body['application/json']['formatedExample'] = syntaxHighlight(omethod.responses[res].body['application/json']['example']).trim()
                 }
-
-                console.log('--X00')
             }
 
             dataobject.methodData = omethod;
@@ -399,11 +399,9 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
 
             if (omethod.method == "post" && omethod.body && omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']) {
                 dataobject.postFormPars = omethod.body['application/x-www-form-urlencoded']['formParameters'];
-                console.log('body 2')
                 //console.log("BODY", dataobject.postBodyPars);
             }
             else if (omethod.method == "post") {
-                console.log('body 3')
                 dataobject.postBodyPars = omethod.body;
                 //console.log(omethod.body);
             }
@@ -451,11 +449,9 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject["url"] = {}
             tempurl = dataobject["resolvedUri"].split(":");
             dataobject["url"]["protocol"] = tempurl[0];
-            console.log('point2',tempurl)
             tempurl = tempurl[1].substring(2);
             dataobject["url"]["host"] = tempurl.substring(0, tempurl.indexOf("/"));
             dataobject["url"]["path"] = tempurl.substring(tempurl.indexOf("/"));
-            console.log('point3')
 
             if (whatIsIt(omethod.body) == "undefined") {
                 console.log('body 4: ', dataobject["resolvedUriParams"]);
@@ -692,6 +688,7 @@ function preprocessRamlJson(data, params) {
         updatedData["baseUri"] = baseuri
         //console.log('after baseUri: ',updatedData["baseUri"])
     }
+    var documentation = updatedData["documentation"]
     var indexTerms = -1
     if (updatedData["documentation"] === undefined)
         updatedData["documentation"] = []
@@ -705,10 +702,10 @@ function preprocessRamlJson(data, params) {
                 content: textAuth
             }
             console.log(authentication)
-            var documentation = updatedData["documentation"]
+            //var documentation = updatedData["documentation"]
             documentation.splice(index, 1, authentication)
-            updatedData["documentation"] = documentation
-            console.log(updatedData["documentation"])
+            //updatedData["documentation"] = documentation
+            //console.log(updatedData["documentation"])
         }
     }
     if (quickstart !== undefined && quickstart !== 'no') {
@@ -718,7 +715,7 @@ function preprocessRamlJson(data, params) {
         }
         var quickText = fs.readFileSync(__dirname + "/../" + quickstartText[quickstart], 'utf8')
         quickText = quickText.replace(/\"api-name\"/g, apiName)
-        var documentation = updatedData["documentation"]
+        //var documentation = updatedData["documentation"]
         var quickstart = {
             title: 'Quickstart',
             content: quickText
@@ -727,18 +724,21 @@ function preprocessRamlJson(data, params) {
             documentation.splice(indexTerms, 0, quickstart)
         } else { //no terms & conds
             documentation.push(quickstart)
-            var textTerms = fs.readFileSync(__dirname + "/../" + 'templates/TERMSANDCONDS.md', 'utf8');
-            textTerms = textTerms.replace("\"api-name\"", apiName)
-            textTerms = textTerms.replace("\"terms-link\"", termsLink)
-            var terms = {
-                title: 'Terms & Conditions',
-                content: textTerms
-            }
-            documentation.push(terms)
         }
-        updatedData["documentation"] = documentation
+        //updatedData["documentation"] = documentation
         //console.log(updatedData["documentation"])
     }
+    if (indexTerms < 0) {
+        var textTerms = fs.readFileSync(__dirname + "/../" + 'templates/TERMSANDCONDS.md', 'utf8');
+        textTerms = textTerms.replace("\"api-name\"", apiName)
+        textTerms = textTerms.replace("\"terms-link\"", termsLink)
+        var terms = {
+            title: 'Terms & Conditions',
+            content: textTerms
+        }
+        documentation.push(terms)
+    }
+    updatedData["documentation"] = documentation
     return updatedData
 }
 
