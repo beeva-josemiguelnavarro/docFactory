@@ -1,9 +1,11 @@
-<li class="nav__list__item"><a class="nav__list__link nav__list__link--active" href="#api-information">API Information</a>
+<li class="nav__list__item">
+	<a class="nav__list__link nav__list__link--active" href="#api-information" title="API Information">API Information</a>
+	<!--<span class="api_market__tooltip nav__list__link__tooltip">API Information</span>-->
 	<ul class="nav__list nav__list--sub-list">
 {% for item in documentation %}
 		<li class="nav__list__item">
-			<a class="nav__list__link" href="#{{item['anchor']}}">{{item['displayName']}}</a>
-			<span class="api_market__tooltip nav__list__link__tooltip">{{item['displayName']}}</span>
+			<a class="nav__list__link" href="#{{item['anchor']}}" title="{{item['displayName']}}">{{item['displayName']}}</a>
+			<!--<span class="api_market__tooltip nav__list__link__tooltip">{{item['displayName']}}</span>-->
 		</li>
 {% endfor %}
 	</ul>
