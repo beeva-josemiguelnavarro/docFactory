@@ -10,10 +10,7 @@ var swig = require('swig');
 var marked = require('marked');
 var colors = require("colors");
 var raml2html = require('raml2html');
-<<<<<<< HEAD
-=======
 var minify = require('html-minifier').minify;
->>>>>>> d4abbf6b0f244a608975832267b493685dfa0b8e
 
 var all_templates = "";
 var all_index = "";
@@ -98,25 +95,6 @@ function generateAnchor(name) {
 function resolveFullURI(ramlData, fullUri, uriParams) {
     uriResolved = fullUri //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
     console.log(fullUri)
-<<<<<<< HEAD
-    //for (key in ramlData.baseUriParameters) {
-    //    //console.log(key, ramlData.baseUriParameters[key])
-    //    if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
-    //        whatIsIt(ramlData.baseUriParameters[key]["enum"]) == "undefined"  &&
-    //        whatIsIt(uriParams[key]["deafult"]) == "undefined"){
-    //        throw "BaseUriParams must have 'example' value or enum. {"+key+"} " + fullUri;
-    //    }
-    //    tempvaluri = "";
-    //    if (whatIsIt(ramlData.baseUriParameters[key]["deafult"]) != "undefined") {
-    //        tempvaluri = ramlData.baseUriParameters[key]["deafult"];
-    //    } else if (whatIsIt(ramlData.baseUriParameters[key]["enum"]) != "undefined") {
-    //        tempvaluri = ramlData.baseUriParameters[key]["enum"][0];
-    //    } else{
-    //        tempvaluri = ramlData.baseUriParameters[key]["example"]
-    //    }
-    //    uriResolved = uriResolved.replace("{" + key + "}", tempvaluri);
-    //}
-=======
     console.log(fullUri)
     for (key in ramlData.baseUriParameters) {
         //console.log(key, ramlData.baseUriParameters[key])
@@ -135,7 +113,6 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
         }
         uriResolved = uriResolved.replace("{" + key + "}", tempvaluri);
     }
->>>>>>> d4abbf6b0f244a608975832267b493685dfa0b8e
     for (key in uriParams) {
         if (whatIsIt(uriParams[key]["example"]) == "undefined" &&
             whatIsIt(uriParams[key]["enum"]) == "undefined" &&
@@ -410,14 +387,8 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject.methodData = omethod;
             //console.log(omethod)
 
-<<<<<<< HEAD
-            console.log('--X01')
-            if(whatIsIt(omethod.method) == "undefined"){
-                throw "Undefined method name for " + + JSON.stringify(resources[resourceKey], null, 3);
-=======
             if (whatIsIt(omethod.method) == "undefined") {
                 throw "Undefined method name for " + +JSON.stringify(resources[resourceKey], null, 3);
->>>>>>> d4abbf6b0f244a608975832267b493685dfa0b8e
             }
 
             dataobject.anchor = anchorBase + "-" + omethod.method.toLowerCase();
@@ -426,12 +397,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject.baseUri = baseUri;
             dataobject.fullUri = baseUri + currentPath;
 
-<<<<<<< HEAD
-            console.log('--X02')
-            if(omethod.method == "post" && omethod.body && omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']){
-=======
             if (omethod.method == "post" && omethod.body && omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']) {
->>>>>>> d4abbf6b0f244a608975832267b493685dfa0b8e
                 dataobject.postFormPars = omethod.body['application/x-www-form-urlencoded']['formParameters'];
                 console.log('body 2')
                 //console.log("BODY", dataobject.postBodyPars);
@@ -471,29 +437,17 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 dataobject.queryParams.push(oqueryparam);
             }
 
-<<<<<<< HEAD
-            console.log('--X04')
-            //Generate examples for curl and java
-            dataobject["resolvedUri"] = resolveFullURI(ramlData, dataobject.fullUri, dataobject.uriParams)
-
-            console.log('--X05')
-=======
             //Generate examples for curl, python and java
             dataobject["resolvedUri"] = resolveFullURI(ramlData, dataobject.fullUri, dataobject.uriParams);
->>>>>>> d4abbf6b0f244a608975832267b493685dfa0b8e
             qpars = "";
             for (key in dataobject.queryParams) {
                 if (dataobject.queryParams[key]["required"])
                     qpars += dataobject.queryParams[key]["key"] + "=" + dataobject.queryParams[key]["example"] + "&";
             }
-<<<<<<< HEAD
-            console.log('point1')
-            dataobject["resolvedUriParams"]=dataobject["resolvedUri"]+(qpars!=""?"?"+qpars.substring(0, qpars.length-1) :"");
-=======
+
             //console.log('point1')
             dataobject["resolvedUriParams"] = dataobject["resolvedUri"] + (qpars != "" ? "?" + qpars.substring(0, qpars.length - 1) : "");
             //dataobject["resolvedUriParams"] = resolveUris(ramlData, dataobject.fullUri, dataobject.uriParams);
->>>>>>> d4abbf6b0f244a608975832267b493685dfa0b8e
             dataobject["url"] = {}
             tempurl = dataobject["resolvedUri"].split(":");
             dataobject["url"]["protocol"] = tempurl[0];
