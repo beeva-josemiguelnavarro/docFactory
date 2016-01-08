@@ -142,10 +142,24 @@
                 <pre class="prettyprint"> {{ curlexample }}</pre>
             </div>
         </div>
-        {if postBodyPars%}
+        {% if postBodyPars%}
         <h2 class="example__subtitle--response">REQUEST</h2>
 
+        {% if postBodyPars["application/json"] %}
+        {% if postBodyPars["application/json"]["example"] %}
+        <h3 class="example__subtitle--status-code">Example</h3>
+            <span class="example__status-code example__status-code">
+                <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["example"]}} {% endautoescape %}</pre>
+            </span>
+        {% endif %}
+        {% if postBodyPars["application/json"]["schema"] %}
         <h3 class="example__subtitle--status-code">Schema</h3>
+            <span class="example__status-code example__status-code">
+                <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["schema"]}} {% endautoescape %}</pre>
+            </span>
+        {% endif %}
+        {% endif %}
+
 
         {% endif %}
         <h2 class="example__subtitle--response">RESPONSE</h2>
