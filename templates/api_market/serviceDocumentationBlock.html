@@ -143,21 +143,22 @@
             </div>
         </div>
         {% if postBodyPars%}
-        <h2 class="example__subtitle--response">REQUEST</h2>
-
-        {% if postBodyPars["application/json"] %}
-        {% if postBodyPars["application/json"]["example"] %}
-        <h3 class="example__subtitle--status-code">Example</h3>
-            <span class="example__status-code example__status-code">
-                <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["example"]}} {% endautoescape %}</pre>
-            </span>
-        {% endif %}
-        {% if postBodyPars["application/json"]["schema"] %}
-        <h3 class="example__subtitle--status-code">Schema</h3>
-            <span class="example__status-code example__status-code">
-                <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["schema"]}} {% endautoescape %}</pre>
-            </span>
-        {% endif %}
+        <div class="example__info">
+            <h2 class="example__subtitle--response">REQUEST</h2>
+            {% if postBodyPars["application/json"] %}
+            {% if postBodyPars["application/json"]["example"] %}
+            <h3 class="example__subtitle--status-code">Example</h3>
+                <span class="example__json">
+                    <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["example"]}} {% endautoescape %}</pre>
+                </span>
+            {% endif %}
+            {% if postBodyPars["application/json"]["schema"] %}
+            <h3 class="example__subtitle--status-code">Schema</h3>
+                <span class="example__json">
+                    <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["schema"]}} {% endautoescape %}</pre>
+                </span>
+            {% endif %}
+        </div>
         {% endif %}
 
 
@@ -185,14 +186,15 @@
                     </span>
                 </ul>
                 {% endif %}
+                {% if responses["body"] %}
                 <h3 class="example__subtitle--status-code">BODY</h3>
                 {% for key,prop in responses["body"] %}
-                <div class="example__info__col">
+                <div class="example__info__col {% if not loop.first %}example__info__col-with_margin{% endif %}">
                     <span class="example__info__block">
                         <label class="example__info__text">Example: </label>
                     </span>
                 </div>
-                <div class="example__info__col">
+                <div class="example__info__col {% if not loop.first %}example__info__col-with_margin{% endif %}">
                     <span class="example__info__block">
                         <label class="example__info__text">Type: </label>
                         <label class="example__info__text">{{key}}</label>
@@ -206,9 +208,11 @@
                  {% endif %}
                  </span>
                 {% endfor %}
+                {% endif %}
+                {% if responses["headers"] %}
                 <h3 class="example__subtitle--status-code">HEADERS</h3>
                 {% for key,prop in responses["headers"] %}
-                <div class="example__info__col">
+                <div class="example__info__col ">
                     <span class="example__info__block">
                         <label class="example__info__text">Example: </label>
                     </span>
@@ -227,6 +231,7 @@
                  {% endif %}
                  </span>
                 {% endfor %}
+                {% endif %}
             </div>
             {% endfor %}
         </div>

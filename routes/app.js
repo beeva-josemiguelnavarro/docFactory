@@ -93,9 +93,9 @@ function generateAnchor(name) {
 }
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
-    console.log('resolvefulluris')
+    //console.log('resolvefulluris')
     uriResolved = fullUri //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
-    console.log(fullUri,ramlData.baseUriParameters)
+    //console.log(fullUri,ramlData.baseUriParameters)
     for (key in ramlData.baseUriParameters) {
         //console.log(key, ramlData.baseUriParameters[key])
         if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
@@ -134,9 +134,9 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
 }
 
 function resolveUris(ramlData, fullUri, uriParams) {
-    console.log('resolveuris')
+    //console.log('resolveuris')
     uriResolved = fullUri; //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
-    console.log('full uri',fullUri)
+    //console.log('full uri',fullUri)
     uris = [];
     if (whatIsIt(uriParams) == "undefined") {
         console.log('uriparams undefined');
@@ -194,7 +194,7 @@ function resolveUris(ramlData, fullUri, uriParams) {
     } else {
         uriResolved.uri = uris[0];
     }
-    console.log('*****', uriResolved, '*****')
+    //console.log('*****', uriResolved, '*****')
     return uriResolved;
 }
 
@@ -246,6 +246,25 @@ function whatIsIt(object) {
     }
 }
 
+function syntaxHighlight(json) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
+
 function formatedApiMarket(compiledHtml) {
     while (compiledHtml.indexOf('<a href="#/') > -1)
         compiledHtml = compiledHtml.replace('<a href="#/', '<a href="/');
@@ -270,6 +289,15 @@ function formatedApiMarket(compiledHtml) {
     while (compiledHtml.indexOf('<ol>') > -1)
         compiledHtml = compiledHtml.replace('<ol>', '<ol class="api__documentation__ordered-list">');
     while (compiledHtml.indexOf('<pre><code') > -1) {
+        var indexStartCode = compiledHtml.indexOf('>',compiledHtml.indexOf('code'))
+        var indexEndCode = compiledHtml.indexOf('</code>',indexStartCode)
+        var json = compiledHtml.substring(indexStartCode+1,indexEndCode)
+        //.replace(/quot;/g,'"').replace(/amp;/g,'')
+        var formatedJson = syntaxHighlight(json.replace(/&quot;/g,'"'))
+        var textBefore = compiledHtml.substring(0,indexStartCode+1)
+        var textAfter = compiledHtml.substring(indexEndCode)
+        console.log(textBefore+formatedJson+textAfter)
+        compiledHtml = textBefore+formatedJson+textAfter
         compiledHtml = compiledHtml.replace('<pre><code','<pre class="example__code-container example__code-container-with-code"><code');
         compiledHtml = compiledHtml.replace('<code class="', "<pre class=\"prettyprint_json ");
         compiledHtml = compiledHtml.replace('<code>', '<pre class="prettyprint_json">');
@@ -278,8 +306,10 @@ function formatedApiMarket(compiledHtml) {
     while (compiledHtml.indexOf('<pre>') > -1)
         compiledHtml = compiledHtml.replace('<pre>', '<pre class="example__code-container">');
     //compiledHtml = removeIds(compiledHtml)
-    if (compiledHtml.indexOf('class="lang-JSON"') > -1)
+    if (compiledHtml.indexOf('class="lang-JSON"') > -1){
+        console.log('json item')
         console.log(compiledHtml)
+    }
 
     return compiledHtml;
 }
@@ -339,9 +369,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             //if(whatIsIt(dataHeadTempl["description"]) == "undefined"){
             //    throw "Undefined 'description' for method in " + JSON.stringify(resources[resourceKey], null, 3);
             //}
-            /*
-             TODO get description from documentation of the raml root section
-             */
+
             anchorBase = generateAnchor(parentRUri + dataHeadTempl["anchorName"])
             dataHeadTempl["anchor"] = anchorBase;
             dataHeadTempl["cleanKey"] = cleanKey;
@@ -350,25 +378,6 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             all_templates += formatedApiMarket(compileTemplate(dataHeadTempl, "templates/api_market/serviceInfoBlock.html"));
             dataIndex.anchor = anchorBase;
             dataIndex.displayName = dataHeadTempl["displayName"];
-        }
-
-        function syntaxHighlight(json) {
-            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-                var cls = 'number';
-                if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                        cls = 'key';
-                    } else {
-                        cls = 'string';
-                    }
-                } else if (/true|false/.test(match)) {
-                    cls = 'boolean';
-                } else if (/null/.test(match)) {
-                    cls = 'null';
-                }
-                return '<span class="' + cls + '">' + match + '</span>';
-            });
         }
 
         for (var methodKey in resources[resourceKey]["methods"]) {
@@ -401,9 +410,16 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 dataobject.postFormPars = omethod.body['application/x-www-form-urlencoded']['formParameters'];
                 //console.log("BODY", dataobject.postBodyPars);
             }
-            else if (omethod.method == "post") {
+            else if (omethod.method == "post" || omethod.method == "put") {
+                //console.log(omethod.body["application/json"]);
+                if(whatIsIt(omethod.body["application/json"])!=undefined){
+                    console.log('json',omethod.body["application/json"])
+                    for(var index in omethod.body["application/json"])
+                        omethod.body["application/json"][index]=syntaxHighlight(omethod.body["application/json"][index]).trim()
+                        //omethod.method["application/json"][index]=syntaxHighlight(omethod.method["application/json"][index].replace(/\"\\n\"/g,'')).trim();
+                }
+                //console.log(omethod.body["application/json"]);
                 dataobject.postBodyPars = omethod.body;
-                //console.log(omethod.body);
             }
 
             dataIndex.methods.push(dataobject);
@@ -454,20 +470,20 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject["url"]["path"] = tempurl.substring(tempurl.indexOf("/"));
 
             if (whatIsIt(omethod.body) == "undefined") {
-                console.log('body 4: ', dataobject["resolvedUriParams"]);
+                //console.log('body 4: ', dataobject["resolvedUriParams"]);
                 dataobject["curlexample"] = compileTemplate(dataobject, "templates/code/example.nobody.curl");
                 dataobject["javaexample"] = compileTemplate(dataobject, "templates/code/example.nobody.java");
                 dataobject["pythexample"] = compileTemplate(dataobject, "templates/code/example.nobody.py");
             }
             else {
                 if (omethod.body['application/x-www-form-urlencoded'] && omethod.body['application/x-www-form-urlencoded']['formParameters']) {
-                    console.log('body 5: ', dataobject["resolvedUriParams"]);
+                    //console.log('body 5: ', dataobject["resolvedUriParams"]);
                     dataobject["curlexample"] = compileTemplate(dataobject, "templates/code/example.form.curl");
                     dataobject["javaexample"] = compileTemplate(dataobject, "templates/code/example.form.java");
                     dataobject["pythexample"] = compileTemplate(dataobject, "templates/code/example.form.py");
                 }
                 else {
-                    console.log('body 6: ', dataobject["resolvedUriParams"]);
+                    //console.log('body 6: ', dataobject["resolvedUriParams"]);
                     dataobject["curlexample"] = compileTemplate(dataobject, "templates/code/example.body.curl");
                     dataobject["javaexample"] = compileTemplate(dataobject, "templates/code/example.body.java");
                     dataobject["pythexample"] = compileTemplate(dataobject, "templates/code/example.body.py");
@@ -479,7 +495,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataobject["addSpaces"] = addSpaces;
             dataobject["formatedApiMarket"] = formatedApiMarket;
 
-            console.log(JSON.stringify(dataobject, null, 3))
+            //console.log(JSON.stringify(dataobject, null, 3))
 
             all_templates += compileTemplate(dataobject, "templates/api_market/serviceDocumentationBlock.html");
 
@@ -539,7 +555,7 @@ function parseRaml(data, filename, request, response, next) {
         if (whatIsIt(data["baseUri"]) != "undefined" && data["baseUri"].length > 0)
             dataHead["api_description"]['uris'] = resolveUris(data, data.baseUri, data.baseUriParameters);
         dataHead["baseUri"] = resolveFullURI(data, data.baseUri, null);
-        console.log('----0')
+        //console.log('----0')
 
         if (whatIsIt(data["documentation"]) != "undefined")
             for (i = 0; i < data["documentation"].length; i++) {
@@ -553,11 +569,11 @@ function parseRaml(data, filename, request, response, next) {
                     splitContent = tempContent.substring(indexBefore, indexAfter);
                     contentBefore = tempContent.substring(0, indexBefore);
                     contentAfter = tempContent.substring(indexAfter);
-                    console.log(',,,', splitContent);
+                    //console.log(',,,', splitContent);
                     /*reformating the sub ol*/
                     splitContent = '<ol><li>' + splitContent.substring(splitContent.indexOf('.') + 1) + '</li></ol>';
                     splitContent = splitContent.replace(/··[0-9]+./g, '</li><li>');
-                    console.log('---', splitContent);
+                    //console.log('---', splitContent);
                     tempContent = contentBefore + splitContent + contentAfter;
                 }
                 //while(tempContent.indexOf('··')>-1){
@@ -599,10 +615,10 @@ function parseRaml(data, filename, request, response, next) {
         all_templates = "";
         all_index = "";
         all_summary = "";
-        console.log('----1')
+        //console.log('----1')
         //parseMainResources(data,dataHead["baseUri"])
         parseResources(data, dataHead["baseUri"], data["resources"], "", null);
-        console.log('----2')
+        //console.log('----2')
 
         if (uriParts.query && uriParts.query.template && uriParts.query.template == "security") {
             console.log('security');
@@ -658,18 +674,18 @@ router.get('/', function (request, response, next) {
 
 function preprocessRamlJson(data, params) {
     var baseuri = params.baseuri
-    console.log('baseuri->', baseuri)
+    //console.log('baseuri->', baseuri)
     var baseuriEnv = params.baseuriEnv
-    console.log('baseuriEnv->', baseuriEnv)
+    //console.log('baseuriEnv->', baseuriEnv)
     var quickstart = params.quickstart
-    console.log('quickstart->', quickstart)
+    //console.log('quickstart->', quickstart)
     var apiName = params.apiName
-    console.log('apiName->', apiName)
+    //console.log('apiName->', apiName)
     var termsLink = params.termsLink
-    console.log('termsLink->', termsLink)
+    //console.log('termsLink->', termsLink)
     var updatedData = data;
     if (baseuriEnv !== undefined) {
-        console.log('prev params->', updatedData["baseUriParameters"])
+        //console.log('prev params->', updatedData["baseUriParameters"])
         updatedData["baseUri"] = 'https://{domain}/' + apiName.toLowerCase().replace(' ', '-') + '{env}/' + updatedData['version']
         updatedData["baseUriParameters"] = {
             domain: {
@@ -681,8 +697,8 @@ function preprocessRamlJson(data, params) {
                 enum: ['', baseuriEnv]
             }
         }
-        console.log('baseuri->', updatedData["baseUri"])
-        console.log('parameters->', updatedData["baseUriParameters"])
+        //console.log('baseuri->', updatedData["baseUri"])
+        //console.log('parameters->', updatedData["baseUriParameters"])
     } else if (baseuri !== undefined) {
         //console.log('before baseUri: ',updatedData["baseUri"])
         updatedData["baseUri"] = baseuri
@@ -704,7 +720,7 @@ function preprocessRamlJson(data, params) {
                 title: 'Authentication',
                 content: textAuth
             }
-            console.log(authentication)
+            //console.log(authentication)
             //var documentation = updatedData["documentation"]
             documentation.splice(index, 1, authentication)
             //updatedData["documentation"] = documentation
