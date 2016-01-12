@@ -194,7 +194,7 @@ function resolveUris(ramlData, fullUri, uriParams) {
     } else {
         uriResolved.uri = uris[0];
     }
-    //console.log('*****', uriResolved, '*****')
+    console.log('*****', uriResolved, '*****')
     return uriResolved;
 }
 
@@ -555,7 +555,7 @@ function parseRaml(data, filename, request, response, next) {
         if (whatIsIt(data["baseUri"]) != "undefined" && data["baseUri"].length > 0)
             dataHead["api_description"]['uris'] = resolveUris(data, data.baseUri, data.baseUriParameters);
         dataHead["baseUri"] = resolveFullURI(data, data.baseUri, null);
-        //console.log('----0')
+        console.log('----0')
 
         if (whatIsIt(data["documentation"]) != "undefined")
             for (i = 0; i < data["documentation"].length; i++) {
@@ -576,25 +576,6 @@ function parseRaml(data, filename, request, response, next) {
                     //console.log('---', splitContent);
                     tempContent = contentBefore + splitContent + contentAfter;
                 }
-                //while(tempContent.indexOf('··')>-1){
-                //    var indexBefore = tempContent.indexOf('··1.')
-                //    var indexAfter = tempContent.substring(indexBefore+1).indexOf('</li>')
-                //    var tempStringBefore = tempContent.substring(0,indexBefore-1)
-                //    var tempStringAfter =  tempContent.substring(indexBefore+1).substring(indexAfter)
-                //    var blockToFormat = tempContent.substring(indexBefore-1,indexAfter-1)
-                //    blockToFormat = blockToFormat.replace('··1.','<li>')
-                //    while(blockToFormat.indexOf('··')>-1){
-                //        var indexInit = blockToFormat.indexOf('··')
-                //        var indexEnd = blockToFormat.substring(0,indexInit+2).indexOf('.')
-                //        var partBefore = blockToFormat.substring(0,indexInit-1)
-                //        var partAfter = blockToFormat.substring(indexEnd+1)
-                //        blockToFormat = partBefore +'</li><li>'+partAfter
-                //    }
-                //    var formatedBlock = '<ol class="api__documentation__ordered-list">' + blockToFormat + '</ol>'
-                //    console.log(formatedBlock)
-                //    console.log('----')
-                //    tempContent = tempStringBefore + formatedBlock + tempStringAfter
-                //}
                 docitem.description = tempContent
                 docitem.anchor = generateAnchor("documentation-" + docitem.displayName)
                 dataHead["documentation"].push(docitem);
@@ -615,10 +596,10 @@ function parseRaml(data, filename, request, response, next) {
         all_templates = "";
         all_index = "";
         all_summary = "";
-        //console.log('----1')
+        console.log('----1')
         //parseMainResources(data,dataHead["baseUri"])
         parseResources(data, dataHead["baseUri"], data["resources"], "", null);
-        //console.log('----2')
+        console.log('----2')
 
         if (uriParts.query && uriParts.query.template && uriParts.query.template == "security") {
             console.log('security');
@@ -761,7 +742,7 @@ function preprocessRamlJson(data, params) {
         var textResources = fs.readFileSync(__dirname + "/../" + 'templates/RESOURCES.md', 'utf8');
         var resources = {
             title: 'Related resources',
-            content: resources
+            content: textResources
         }
         documentation.push(resources)
     }
