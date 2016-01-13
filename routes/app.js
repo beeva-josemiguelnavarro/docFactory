@@ -93,9 +93,12 @@ function generateAnchor(name) {
 }
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
-    //console.log('resolvefulluris')
+    console.log('resolvefulluris')
     uriResolved = fullUri //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
-    //console.log(fullUri,ramlData.baseUriParameters)
+    console.log(fullUri)
+    console.log(ramlData.baseUriParameters)
+    console.log(uriParams)
+
     for (key in ramlData.baseUriParameters) {
         //console.log(key, ramlData.baseUriParameters[key])
         if(whatIsIt(ramlData.baseUriParameters[key]["example"]) == "undefined" &&
@@ -113,10 +116,12 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
         }
         uriResolved = uriResolved.replace("{" + key + "}", tempvaluri);
     }
+    console.log(uriResolved)
     for (key in uriParams) {
         //console.log(uriParams[key])
         if (whatIsIt(uriParams[key]["example"]) == "undefined" &&
             whatIsIt(uriParams[key]["enum"]) == "undefined" &&
+            whatIsIt(uriParams[key]["displayName"]) == "undefined" &&
             whatIsIt(uriParams[key]["deafult"]) == "undefined") {
             throw "URIParams must have 'example' value or enum. {" + uriParams[key]["key"] + "} " + fullUri;
         }
@@ -125,11 +130,14 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
             tempvaluri = uriParams[key]["enum"][0];
         } else if (whatIsIt(uriParams[key]["default"]) != "undefined") {
             tempvaluri = uriParams[key]["default"];
+        } else if (whatIsIt(uriParams[key]["displayName"]) != "undefined") {
+            tempvaluri = uriParams[key]["displayName"];
         } else {
             tempvaluri = uriParams[key]["example"]
         }
         uriResolved = uriResolved.replace("{" + uriParams[key]["key"] + "}", tempvaluri);
     }
+    console.log(uriResolved)
     return uriResolved;
 }
 
@@ -296,7 +304,7 @@ function formatedApiMarket(compiledHtml) {
         var formatedJson = syntaxHighlight(json.replace(/&quot;/g,'"'))
         var textBefore = compiledHtml.substring(0,indexStartCode+1)
         var textAfter = compiledHtml.substring(indexEndCode)
-        console.log(textBefore+formatedJson+textAfter)
+        //console.log(textBefore+formatedJson+textAfter)
         compiledHtml = textBefore+formatedJson+textAfter
         compiledHtml = compiledHtml.replace('<pre><code','<pre class="example__code-container example__code-container-with-code"><code');
         compiledHtml = compiledHtml.replace('<code class="', "<pre class=\"prettyprint_json ");
@@ -344,6 +352,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         }
         /*END ADDING PARENT URI PARAMETERS */
         /*********************************************/
+        console.log('1----------1')
         var anchorBase = "";
         var dataIndex = new Object();
         dataIndex.methods = [];
@@ -379,6 +388,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataIndex.anchor = anchorBase;
             dataIndex.displayName = dataHeadTempl["displayName"];
         }
+        console.log('1----------2')
 
         for (var methodKey in resources[resourceKey]["methods"]) {
             dataobject = new Object();
@@ -413,7 +423,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             else if (omethod.method == "post" || omethod.method == "put") {
                 //console.log(omethod.body["application/json"]);
                 if(whatIsIt(omethod.body["application/json"])!=undefined){
-                    console.log('json',omethod.body["application/json"])
+                    //console.log('json',omethod.body["application/json"])
                     for(var index in omethod.body["application/json"])
                         omethod.body["application/json"][index]=syntaxHighlight(omethod.body["application/json"][index]).trim()
                         //omethod.method["application/json"][index]=syntaxHighlight(omethod.method["application/json"][index].replace(/\"\\n\"/g,'')).trim();
@@ -451,23 +461,29 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 dataobject.queryParams.push(oqueryparam);
             }
 
+            console.log('1----------3')
             //Generate examples for curl, python and java
             dataobject["resolvedUri"] = resolveFullURI(ramlData, dataobject.fullUri, dataobject.uriParams);
+            console.log('point0')
             qpars = "";
             for (key in dataobject.queryParams) {
                 if (dataobject.queryParams[key]["required"])
                     qpars += dataobject.queryParams[key]["key"] + "=" + dataobject.queryParams[key]["example"] + "&";
             }
 
-            //console.log('point1')
+            console.log('point1')
             dataobject["resolvedUriParams"] = dataobject["resolvedUri"] + (qpars != "" ? "?" + qpars.substring(0, qpars.length - 1) : "");
             //dataobject["resolvedUriParams"] = resolveUris(ramlData, dataobject.fullUri, dataobject.uriParams);
             dataobject["url"] = {}
             tempurl = dataobject["resolvedUri"].split(":");
+            console.log('point2')
             dataobject["url"]["protocol"] = tempurl[0];
+            console.log('point3')
             tempurl = tempurl[1].substring(2);
+            console.log('point4')
             dataobject["url"]["host"] = tempurl.substring(0, tempurl.indexOf("/"));
             dataobject["url"]["path"] = tempurl.substring(tempurl.indexOf("/"));
+            console.log('1----------4')
 
             if (whatIsIt(omethod.body) == "undefined") {
                 //console.log('body 4: ', dataobject["resolvedUriParams"]);
@@ -502,6 +518,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         }
 
         //console.log("methods size ", dataIndex.methods.length);
+        console.log('1----------5')
 
         if (dataIndex.methods.length > 0) {
             //console.log("entrando", dataIndex);
@@ -512,6 +529,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         if (resources[resourceKey].hasOwnProperty("resources")) {
             parseResources(ramlData, baseUri, resources[resourceKey]["resources"], currentPath, resources[resourceKey]["uriParameters"])
         }
+        console.log('1----------6')
 
     }
 
@@ -602,9 +620,7 @@ function parseRaml(data, filename, request, response, next) {
         console.log('----2')
 
         if (uriParts.query && uriParts.query.template && uriParts.query.template == "security") {
-            console.log('security');
             template = swig.compileFile(__dirname + "/.." + "/templates/api_market/securityTemplate.html");
-            console.log(template);
         } else if (uriParts.query && uriParts.query.full && uriParts.query.full == "true") {
             template = swig.compileFile(__dirname + "/.." + "/templates/api_market/bodyTemplateFullApiMarket.html");
         } else {
