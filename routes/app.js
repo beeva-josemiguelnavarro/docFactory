@@ -772,8 +772,8 @@ router.get('/online', function (request, response, next) {
     var filename = Date.now() + uriParts.query.apiName + '.raml'
     console.log('Getting online: ', uriFile, ' out: ', filename)
     raml.loadFile(uriFile).then(function (data) {
-        //console.log('tofile')
-        //toFile('./RAML/'+filename.replace('.raml','.json'),data)
+        console.log('tofile')
+        toFile('./RAML/'+filename.replace('.raml','.json'),data)
         console.log(data)
         parseRaml(preprocessRamlJson(data, uriParts.query), filename, request, response, next)
     }, function (error) {
@@ -801,10 +801,10 @@ router.get('/file', function (request, response, next) {
 
 router.get('/json/:jsonFileName', function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
-    var route = './output/' + request.params.jsonFileName;
+    var routeIn = './RAML/' + request.params.jsonFileName;
     var filename = request.params.jsonFileName.replace('.json', '.html')
-    console.log('Getting json: ', route, ' out: ', filename)
-    fs.readFile(route, function (err, data) {
+    console.log('Getting json: ', routeIn, ' out: ', filename)
+    fs.readFile(routeIn, function (err, data) {
         if (!err) {
             parseRaml(preprocessRamlJson(data, uriParts.query), filename, request, response, next)
             //response.setHeader('Content-type' , 'application/json');
