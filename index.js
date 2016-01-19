@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 
+
 var path = require('path');
 var fs = require("fs");
 var url = require("url");
@@ -21,12 +22,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var docFactory = require('./routes/app');
+var ramlHtml =  require('./routes/raml2html');
 
 app.use('/RAML',docFactory);
+app.use('/raml2html',ramlHtml);
 
 app.get('/', function (request, response, next) {
     response.sendFile(path.join(__dirname, 'views/main.html'))
 });
+
+
 
 //var storage = multer.diskStorage({
 //    destination: function (req, file, cb) {
