@@ -405,6 +405,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
 
             dataobject.methodData = omethod;
             //console.log(omethod)
+            console.log('1----------21')
 
             if (whatIsIt(omethod.method) == "undefined") {
                 throw "Undefined method name for " + +JSON.stringify(resources[resourceKey], null, 3);
@@ -421,9 +422,9 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 //console.log("BODY", dataobject.postBodyPars);
             }
             else if (omethod.method == "post" || omethod.method == "put") {
-                //console.log(omethod.body["application/json"]);
-                if(whatIsIt(omethod.body["application/json"])!=undefined){
-                    //console.log('json',omethod.body["application/json"])
+                console.log(omethod.body);
+                if(whatIsIt(omethod.body)!=='undefined' && whatIsIt(omethod.body["application/json"])!=='undefined'){
+                    console.log('json',omethod.body["application/json"])
                     for(var index in omethod.body["application/json"])
                         omethod.body["application/json"][index]=syntaxHighlight(omethod.body["application/json"][index]).trim()
                         //omethod.method["application/json"][index]=syntaxHighlight(omethod.method["application/json"][index].replace(/\"\\n\"/g,'')).trim();
@@ -431,15 +432,34 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 //console.log(omethod.body["application/json"]);
                 dataobject.postBodyPars = omethod.body;
             }
+            console.log('1----------22')
 
             dataIndex.methods.push(dataobject);
 
             if (omethod.headers != null) {
-                dataobject.headers = omethod.headers
+                //dataobject.headers = omethod.headers
+                processedHeaders = {}
+                //lets remove the \n at the end of the lines
+                for(var myHeader in omethod.headers){
+                    console.log(omethod.headers[myHeader])
+                    var tempHeader = {}
+                    for( var element in omethod.headers[myHeader]){
+                        var contentHeaderProperty = omethod.headers[myHeader][element]
+                        if(whatIsIt(contentHeaderProperty)=='String' && contentHeaderProperty[contentHeaderProperty.length-1] =='\n')
+                            tempHeader[element] = contentHeaderProperty.substring(0,contentHeaderProperty.length-1)
+                        else
+                            tempHeader[element] = contentHeaderProperty
+                    }
+                    processedHeaders[myHeader] =  tempHeader
+                }
+                console.log('--',omethod.headers)
+                console.log('...',processedHeaders)
+                dataobject.headers = processedHeaders
             }
             else {
                 dataobject.headers = null
             }
+            console.log('1----------23')
 
             if (omethod["securedBy"] && omethod["securedBy"].indexOf("basic") != -1) {
                 dataobject.headers["Authorization"] = {
@@ -603,7 +623,8 @@ function parseRaml(data, filename, request, response, next) {
                 dataHead['documentation_article'] += out
             }
 
-        dataHead["overview_link"] = overviewLink;
+        if(uriParts.query.overviewLink !== undefined)
+            dataHead["overview_link"] = overviewLink;
         //dataHead["console_link"]="./console";
         dataHead["console_link"] = "";
         //dataHead["get_api_link"]="PUT_API_NAME_WITH_UNDERSCORES_INSTEAD_OF_SPACES";
@@ -744,7 +765,7 @@ function preprocessRamlJson(data, params) {
         //updatedData["documentation"] = documentation
         //console.log(updatedData["documentation"])
     }
-    if (indexTerms < 0) {
+    if (termsLink!==undefined &&  indexTerms < 0) {
         var textTerms = fs.readFileSync(__dirname + "/../" + 'templates/TERMSANDCONDS.md', 'utf8');
         textTerms = textTerms.replace("\"api-name\"", apiName)
         textTerms = textTerms.replace("\"terms-link\"", termsLink)

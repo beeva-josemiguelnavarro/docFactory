@@ -22,11 +22,15 @@ public class ApiRestExample
 		HttpClientBuilder hcBuilder = HttpClients.custom();
 		HttpClient client = hcBuilder.build() ;
 		Http{{methodData.method|capitalize}} request = new Http{{methodData.method|capitalize}}(url); 
-		//Setting header parameters{% for key,prop in  headers %}
-		request.addHeader("{{key}}", "{{prop.example}}");{% endfor %}
+		{% if headers %}
+            //Setting header parameters
+            {% for key,prop in  headers %}
+            request.addHeader("{{key}}", "{{prop.example}}");
+            {% endfor %}
+		{% endif %}
 		//Setting the body request
-		String xml = "<xml>xxxx</xml>";
-		HttpEntity entity = new ByteArrayEntity(xml.getBytes("UTF-8"));
+		String body = "xxxx";
+		HttpEntity entity = new ByteArrayEntity(body.getBytes("UTF-8"));
 		request.setEntity(entity);
 		//Executing the call
 		HttpResponse response = client.execute(request);

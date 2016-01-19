@@ -24,13 +24,13 @@
             {% for key,prop in headers %}
             <div class="api__documentation__parameters">
                 <div class="col--first"><span class="parameters__parameter">{{key}}</span> <span
-                        class="parameters__default">required <label
-                        class="parameters__type">({{prop.type}})</label></span>
+                        class="parameters__default">required (<label
+                        class="parameters__type">{{prop.type}}</label>)</span>
                 </div>
 
                 <div class="col--second"><span
                         class="parameters__description">{% autoescape false %} {{prop.description}} {% endautoescape %}</span><span
-                        class="paramters__example"> <strong>Example: </strong>{{prop["example"]}}</span>
+                        class="paramters__example"> <strong>Example:</strong> {{prop["example"]}}</span>
                 </div>
             </div>
             {% endfor %}
@@ -65,8 +65,8 @@
             <div class="api__documentation__parameters">
                 <div class="col--first">
                     <span class="parameters__parameter">{{prop["key"]}}</span>
-                    <span class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} <label
-                            class="parameters__type">({{prop.type}})</label>
+                    <span class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} (<label
+                            class="parameters__type">{{prop.type}}</label>)
                         {% if prop["enum"]%}
                         <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
                         {% endif %}
@@ -79,7 +79,7 @@
                             class="parameters__description">{% autoescape false %} {{prop.description}}{% endautoescape %}</span>
                     {% if prop["example"]%}
                     <span
-                            class="paramters__example"> <strong>Example: </strong>{% autoescape false %}{{prop["example"]}}{% endautoescape %}</span>
+                            class="paramters__example"> <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}</span>
                     {% else %}
                     <span
                             class="paramters__example"> <strong> </strong> </span>
@@ -98,8 +98,8 @@
             {% for key,prop in uriParams %}
             <div class="api__documentation__parameters">
                 <div class="col--first"><span class="parameters__parameter">{{prop["key"]}}</span> <span
-                        class="parameters__default">{%if prop["required"]%}required {%else%}optional {%endif%}<label
-                        class="parameters__type">({{prop.type}})</label>
+                        class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} (<label
+                        class="parameters__type">{{prop.type}}</label>)
                     {% if prop["enum"]%}
                     <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
                     {% endif %}
@@ -111,7 +111,7 @@
                             class="parameters__description">{% autoescape false %}{{prop.description}}{% endautoescape %}</span>
                     {% if prop["example"]%}
                     <span
-                            class="paramters__example"> <strong>Example: </strong>{% autoescape false %}{{prop["example"]}}{% endautoescape %}</span>
+                            class="paramters__example"> <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}</span>
                     {% else %}
                     <span
                             class="paramters__example"> <strong> </strong> </span>

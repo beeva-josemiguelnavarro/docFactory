@@ -14,13 +14,13 @@ public class APIRestExample
 		String url = "{{resolvedUriParams}}"; 
 		HttpClientBuilder hcBuilder = HttpClients.custom();
 		HttpClient client = hcBuilder.build() ;
-		Http{{methodData.method|capitalize}} request = new Http{{methodData.method|capitalize	}}(url);
-{% if headers %}
-		//Setting header parameters
-	{% for key,prop in  headers %}
-		request.addHeader("{{key}}", "{{prop.example}}");
-	{% endfor %}
-{% endif %}
+		Http{{methodData.method|capitalize}} request = new Http{{methodData.method|capitalize}}(url);
+        {% if headers %}
+            //Setting header parameters
+            {% for key,prop in  headers %}
+                request.addHeader("{{key}}", "{{prop.example}}");
+            {% endfor %}
+        {% endif %}
 		//Executing the call
 		HttpResponse response = client.execute(request); 
 		System.out.println("Sending '{{methodData.method|upper}}' to " + url);

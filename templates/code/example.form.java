@@ -22,8 +22,12 @@ public class ApiRestExample
 		HttpClientBuilder hcBuilder = HttpClients.custom();
 		HttpClient client = hcBuilder.build() ;
 		Http{{methodData.method|capitalize}} request = new Http{{methodData.method|capitalize}}(url); 
-		//Setting header parameters{% for key,prop in  headers %}
-		request.addHeader("{{key}}", "{{prop.example}}");{% endfor %} 
+		{% if headers %}
+            //Setting header parameters
+            {% for key,prop in  headers %}
+            request.addHeader("{{key}}", "{{prop.example}}");
+            {% endfor %}
+        {% endif %}
 		request.addHeader("Content-type", "application/x-www-form-urlencoded");
 		//Setting the body parameters		
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();

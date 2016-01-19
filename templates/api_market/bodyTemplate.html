@@ -11,7 +11,7 @@
     <div id="header"><!-- header content goes in here -->
         <div class="size-controls">
             <ul class="size-controls__options">
-                <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--resize" data-action="overview" href="{{overview_link}}">Overview</a></li>
+                <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--resize {%if not overview_link %}hidden{% endif %}" data-action="overview" href="{{overview_link}}">Overview</a></li>
                 <!--
                 <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--console" data-action="switch-to-console" href="{{console_link}}">Switch to console</a></li>
                 -->
