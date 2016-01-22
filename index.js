@@ -121,14 +121,33 @@ app.get('/html',function (request, response, next){
 
 })
 
+
 app.get('/htmlFull',function (request, response, next){
     var uriParts = url.parse(request.url, true, true);
-    fs.readFile('./output/'+uriParts.query.file, function(err, data) {
+    fs.readFile('./templates/full/fullHeader.html', function(err, top) {
         if (!err) {
-            response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-            response.end(data);
+            fs.readFile('./templates/full/fullFooter.html', function(err, footer) {
+                if (!err) {
+                    fs.readFile('./output/'+uriParts.query.file, function(err, body) {
+                        if (!err) {
+                            response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+                            response.end(top +body + footer);
+                        } else {
+                            console.log ('file not found: ' + uriParts.query.file);
+                            //response.setHeader('Content-type' , headers);
+                            response.writeHead(404, "Not Found");
+                            response.end();
+                        }
+                    });
+                } else {
+                    console.log ('FOOTER file');
+                    //response.setHeader('Content-type' , headers);
+                    response.writeHead(404, "Not Found");
+                    response.end();
+                }
+            });
         } else {
-            console.log ('file not found: ' + uriParts.query.file);
+            console.log ('HEADER not found');
             //response.setHeader('Content-type' , headers);
             response.writeHead(404, "Not Found");
             response.end();

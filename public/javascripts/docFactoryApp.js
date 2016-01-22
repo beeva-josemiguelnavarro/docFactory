@@ -26,6 +26,7 @@ angular.module('docFactoryApp',['angularFileUpload'])
         }
         $scope.documentation = '';
         $scope.documentationSelected = ''
+        $scope.documentationActive = ''
         $scope.ramls = []
         $scope.ramlDocumentation = '';
 
@@ -109,13 +110,15 @@ angular.module('docFactoryApp',['angularFileUpload'])
             });
         }
 
-        $scope.getDocumentation = function (index) {
-            console.log(index)
-            $http.get(index).then(function(body){
+        $scope.getDocumentation = function (item) {
+            console.log(item)
+            var url = item.url
+            $http.get(url).then(function(body){
                 console.log(body)
                 $scope.documentation = body.data
-                $scope.documentationSelected = index
-                $scope.$apply()
+                $scope.documentationSelected = url
+                $scope.documentationActive = item.name
+                //$scope.$apply()
             },function(error){
                 console.log('error',error)
             });
