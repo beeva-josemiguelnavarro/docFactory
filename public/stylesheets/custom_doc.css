@@ -6,3 +6,13 @@
     display: inline-block;
     list-style: none;
 }
+
+.container.api-documentation{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.container.api-documentation .api-doc__section>article:first-child {
+    margin-top: 241px;
+}

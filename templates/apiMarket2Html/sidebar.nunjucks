@@ -1,0 +1,43 @@
+<div id="sidebar" class="sidebar-api_security">
+    <div id="nav-anchor">&nbsp;</div>
+    <h1 class="nav__title"></h1>
+    <div class="nav-wrapper-scroll">
+        <nav class="nav">
+            <ul class="nav__list" data-list="documentation-index">
+                {% for chapter in documentation %}
+                 <li class="nav__list__item">
+                    <a class="nav__list__link" href="#{{chapter.uniqueId}}"
+                        title="{{ chapter.title}}"> {{ chapter.title}}</a>
+                </li>
+                {% endfor %}
+                {% for resource in resources %}
+                <li class="nav__list__item">
+                    <a class="nav__list__link" href="#{{resource.uniqueId}}"
+                        title="{% if resource.displayName %}{{ resource.displayName}}{% else %}{{ resource.relativeUri }}{% endif %}">
+                            {% if resource.displayName %}{{ resource.displayName}}{% else %}{{ resource.relativeUri }}{% endif %}
+                    </a>
+                    {% if resource.methods %}
+                    <ul class="nav__list nav__list--sub-list">
+                        {% for method in resource.methods %}
+                        <li class="nav__list__item">
+                            {{method.method}}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% elif resource.resources %}
+                       <ul class="nav__list nav__list--sub-list">
+                           {% for subresource in resource.resources %}
+                           <li class="nav__list__item">
+                               {{subresource}}
+                           </li>
+                           {% endfor %}
+                       </ul>
+                    {% else %}
+                    no resources
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</div>

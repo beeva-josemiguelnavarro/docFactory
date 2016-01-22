@@ -4,7 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
 
     <link class="lfr-css-file" href="https://www.bbvaapimarket.com/bbva-amazing-theme/css/aui.css?browserId=other&amp;themeId=bbvaamazing_WAR_bbvaamazingtheme&amp;minifierType=css&amp;languageId=en_US&amp;b=6201&amp;t=1449235100000" rel="stylesheet" type="text/css">
-    <link href="/html/css/main.css?browserId=other&amp;themeId=bbvaamazing_WAR_bbvaamazingtheme&amp;minifierType=css&amp;languageId=en_US&amp;b=6201&amp;t=1438345748000" rel="stylesheet" type="text/css">
+    <link href="https://www.bbvaapimarket.com//html/css/main.css?browserId=other&amp;themeId=bbvaamazing_WAR_bbvaamazingtheme&amp;minifierType=css&amp;languageId=en_US&amp;b=6201&amp;t=1438345748000" rel="stylesheet" type="text/css">
     <link href="https://www.bbvaapimarket.com/html/portlet/journal_content/css/main.css?browserId=other&amp;themeId=bbvaamazing_WAR_bbvaamazingtheme&amp;minifierType=css&amp;languageId=en_US&amp;b=6201&amp;t=1449229332000" rel="stylesheet" type="text/css">
     <link href="https://www.bbvaapimarket.com/notifications-portlet/notifications/css/main.css?browserId=other&amp;themeId=bbvaamazing_WAR_bbvaamazingtheme&amp;minifierType=css&amp;languageId=en_US&amp;b=6201&amp;t=1449229692000" rel="stylesheet" type="text/css">
     <link href="https://www.bbvaapimarket.com/html/portlet/login/css/main.css?browserId=other&amp;themeId=bbvaamazing_WAR_bbvaamazingtheme&amp;minifierType=css&amp;languageId=en_US&amp;b=6201&amp;t=1449229332000" rel="stylesheet" type="text/css">
@@ -47,13 +47,11 @@
                                         <div class="portlet-content-container">
                                             <div class="portlet-body">
                                                 <div class="journal-content-article">
-                                                    <!-- DOCUMENTATION BLOCK -->
-
                                                     <!-- BUTTONS BAR -->
                                                     <div id="header"><!-- header content goes in here -->
                                                         <div class="size-controls">
                                                             <ul class="size-controls__options">
-                                                                <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--resize" data-action="overview" href="{{overview_link}}">Overview</a></li>
+                                                                <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--resize {%if not overview_link %}hidden{% endif %}" data-action="overview" href="{{overview_link}}">Overview</a></li>
                                                                 <!--
                                                                 <li class="size-controls__option"><a class="size-controls__option--overview size-controls__option--console" data-action="switch-to-console" href="{{console_link}}">Switch to console</a></li>
                                                                 -->
@@ -162,7 +160,6 @@
 
                                                     <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
                                                     <!-- CONTENT BLOCK END-->
-                                                    <!-- END OF DOCUMENTATION BLOCK -->
                                                 </div>
                                             </div>
                                         </div>

@@ -21,6 +21,7 @@
     "html-minifier": "^1.1.1",
     "marked": "*",
     "multer": "^1.1.0",
+    "protagonist": "^1.2.5",
     "raml-parser": "*",
     "raml2html": "*",
     "serve-favicon": "^2.3.0",

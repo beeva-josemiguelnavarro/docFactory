@@ -118,14 +118,16 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
     }
     console.log(uriResolved)
     for (key in uriParams) {
-        //console.log(uriParams[key])
+        console.log(uriParams[key])
         if (whatIsIt(uriParams[key]["example"]) == "undefined" &&
             whatIsIt(uriParams[key]["enum"]) == "undefined" &&
             whatIsIt(uriParams[key]["displayName"]) == "undefined" &&
             whatIsIt(uriParams[key]["deafult"]) == "undefined") {
+            console.log('something is missing')
             throw "URIParams must have 'example' value or enum. {" + uriParams[key]["key"] + "} " + fullUri;
         }
-        tempvaluri = "";
+        console.log('key',key)
+        tempvaluri = undefined;
         if (whatIsIt(uriParams[key]["enum"]) != "undefined") {
             tempvaluri = uriParams[key]["enum"][0];
         } else if (whatIsIt(uriParams[key]["default"]) != "undefined") {
@@ -135,9 +137,11 @@ function resolveFullURI(ramlData, fullUri, uriParams) {
         } else {
             tempvaluri = uriParams[key]["example"]
         }
-        uriResolved = uriResolved.replace("{" + uriParams[key]["key"] + "}", tempvaluri);
+        console.log(tempvaluri)
+        if(tempvaluri!==undefined)
+            uriResolved = uriResolved.replace("{" + uriParams[key]["key"] + "}", tempvaluri);
     }
-    console.log(uriResolved)
+    console.log('done',uriResolved)
     return uriResolved;
 }
 
@@ -255,6 +259,7 @@ function whatIsIt(object) {
 }
 
 function syntaxHighlight(json) {
+    //console.log('syntax highlight',json)
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
         var cls = 'number';
@@ -274,6 +279,7 @@ function syntaxHighlight(json) {
 }
 
 function formatedApiMarket(compiledHtml) {
+    //console.log('FORMAT AM - ',compiledHtml)
     while (compiledHtml.indexOf('<a href="#/') > -1)
         compiledHtml = compiledHtml.replace('<a href="#/', '<a href="/');
     while (compiledHtml.indexOf('<a href') > -1)
@@ -288,8 +294,12 @@ function formatedApiMarket(compiledHtml) {
         compiledHtml = compiledHtml.replace('<h1 id', '<h1 class="api__documentation__title api__documentation__title__inner" id');
     while (compiledHtml.indexOf('<h2 id') > -1)
         compiledHtml = compiledHtml.replace('<h2 id', '<h2 class="api__documentation__title api__documentation__title__inner" id');
-    while (compiledHtml.indexOf('<h3 id') > -1)
+    while (compiledHtml.indexOf('<h3 id') > -1) {
+        console.log(compiledHtml.red)
         compiledHtml = compiledHtml.replace('<h3 id', '<h3 class="api__documentation__title api__documentation__title__inner" id');
+
+        console.log(compiledHtml.green)
+    }
     while (compiledHtml.indexOf('<h4 id') > -1)
         compiledHtml = compiledHtml.replace('<h4 id', '<h4 class="api__documentation__title api__documentation__title__inner" id');
     while (compiledHtml.indexOf('<ul>') > -1)
@@ -297,15 +307,15 @@ function formatedApiMarket(compiledHtml) {
     while (compiledHtml.indexOf('<ol>') > -1)
         compiledHtml = compiledHtml.replace('<ol>', '<ol class="api__documentation__ordered-list">');
     while (compiledHtml.indexOf('<pre><code') > -1) {
-        var indexStartCode = compiledHtml.indexOf('>',compiledHtml.indexOf('code'))
-        var indexEndCode = compiledHtml.indexOf('</code>',indexStartCode)
-        var json = compiledHtml.substring(indexStartCode+1,indexEndCode)
-        //.replace(/quot;/g,'"').replace(/amp;/g,'')
-        var formatedJson = syntaxHighlight(json.replace(/&quot;/g,'"'))
-        var textBefore = compiledHtml.substring(0,indexStartCode+1)
-        var textAfter = compiledHtml.substring(indexEndCode)
-        //console.log(textBefore+formatedJson+textAfter)
-        compiledHtml = textBefore+formatedJson+textAfter
+        //var indexStartCode = compiledHtml.indexOf('>',compiledHtml.indexOf('<code'))
+        //var indexEndCode = compiledHtml.indexOf('</code>',indexStartCode)
+        //var json = compiledHtml.substring(indexStartCode+1,indexEndCode)
+        ////.replace(/quot;/g,'"').replace(/amp;/g,'')
+        //var formatedJson = syntaxHighlight(json.replace(/&quot;/g,'"'))
+        //var textBefore = compiledHtml.substring(0,indexStartCode+1)
+        //var textAfter = compiledHtml.substring(indexEndCode)
+        ////console.log(textBefore+formatedJson+textAfter)
+        //compiledHtml = textBefore+formatedJson+textAfter
         compiledHtml = compiledHtml.replace('<pre><code','<pre class="example__code-container example__code-container-with-code"><code');
         compiledHtml = compiledHtml.replace('<code class="', "<pre class=\"prettyprint_json ");
         compiledHtml = compiledHtml.replace('<code>', '<pre class="prettyprint_json">');
@@ -318,7 +328,7 @@ function formatedApiMarket(compiledHtml) {
         console.log('json item')
         console.log(compiledHtml)
     }
-
+    console.log('END FORMAT AM',compiledHtml.cyan)
     return compiledHtml;
 }
 
@@ -397,8 +407,9 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
             for (var res in omethod.responses) {
-                //console.log(omethod.responses);
-                if (omethod.responses[res].body !== undefined && omethod.responses[res].body['application/json'] !== undefined) {
+                //console.log('response',omethod.responses);
+                if (omethod.responses[res].body !== undefined && omethod.responses[res].body['application/json'] !== undefined && omethod.responses[res].body['application/json']['example'] !== undefined) {
+                    //console.log(omethod.responses[res].body['application/json'])
                     omethod.responses[res].body['application/json']['formatedExample'] = syntaxHighlight(omethod.responses[res].body['application/json']['example']).trim()
                 }
             }
@@ -422,9 +433,9 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
                 //console.log("BODY", dataobject.postBodyPars);
             }
             else if (omethod.method == "post" || omethod.method == "put") {
-                console.log(omethod.body);
+                //console.log(omethod.body);
                 if(whatIsIt(omethod.body)!=='undefined' && whatIsIt(omethod.body["application/json"])!=='undefined'){
-                    console.log('json',omethod.body["application/json"])
+                    //console.log('json',omethod.body["application/json"])
                     for(var index in omethod.body["application/json"])
                         omethod.body["application/json"][index]=syntaxHighlight(omethod.body["application/json"][index]).trim()
                         //omethod.method["application/json"][index]=syntaxHighlight(omethod.method["application/json"][index].replace(/\"\\n\"/g,'')).trim();
@@ -654,6 +665,10 @@ function parseRaml(data, filename, request, response, next) {
         }
         dataHead["all_index"] = all_index;
         output = template(dataHead);
+
+        if (uriParts.query && uriParts.query.full && uriParts.query.full == "true")
+            toFile("./output/full-" + filename.replace(".raml", ".html"), output);
+
         //
         //if(uriParts.query.url == "online"){
         //    var indexInitial = urlRamlToParse.indexOf("://")+3;

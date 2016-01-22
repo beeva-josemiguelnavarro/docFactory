@@ -23,9 +23,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var docFactory = require('./routes/app');
 var ramlHtml =  require('./routes/raml2html');
+var blueprint =  require('./routes/blueprint');
 
 app.use('/RAML',docFactory);
 app.use('/raml2html',ramlHtml);
+app.use('/blueprint',blueprint);
 
 app.get('/', function (request, response, next) {
     response.sendFile(path.join(__dirname, 'views/main.html'))
@@ -108,6 +110,22 @@ app.get('/html',function (request, response, next){
     fs.readFile('./output/'+uriParts.query.file, function(err, data) {
         if (!err) {
             response.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+            response.end(data);
+        } else {
+            console.log ('file not found: ' + uriParts.query.file);
+            //response.setHeader('Content-type' , headers);
+            response.writeHead(404, "Not Found");
+            response.end();
+        }
+    });
+
+})
+
+app.get('/htmlFull',function (request, response, next){
+    var uriParts = url.parse(request.url, true, true);
+    fs.readFile('./output/'+uriParts.query.file, function(err, data) {
+        if (!err) {
+            response.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
             response.end(data);
         } else {
             console.log ('file not found: ' + uriParts.query.file);
