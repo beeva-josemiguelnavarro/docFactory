@@ -12,6 +12,7 @@
     "url": "https://github.com/beeva-josemiguelnavarro/docFactory"
   },
   "dependencies": {
+    "aglio": "^2.2.0",
     "angular-file-upload": "^2.2.0",
     "body-parser": "^1.14.1",
     "colors": "*",

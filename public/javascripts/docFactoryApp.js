@@ -167,7 +167,10 @@ angular.module('docFactoryApp',['angularFileUpload'])
         }
 
         $scope.sendFormLocal = function(){
-            var url = '/RAML/file?filePath='+$scope.myData.pathFile+ '&' +generatePath($scope.myData)
+            var routeUrl = '/RAML/file'
+            if($scope.myData.pathFile.indexOf('.json')>-1)
+                routeUrl = '/RAML/json'
+            var url = routeUrl + '?filePath='+$scope.myData.pathFile+ '&' +generatePath($scope.myData)
             console.log(url)
             $scope.parsing = true
             $scope.parsingError = false

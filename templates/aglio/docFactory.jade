@@ -1,0 +1,25 @@
+doctype
+
+html
+    head
+        meta(charset="utf-8")
+        title= self.api.name || 'API Documentation'
+    body
+        p= 'host: '+self.api.host
+        p= 'name: '+self.api.name
+        hr
+        h1 content
+        each val, key in self.api.content
+            hr
+            ul
+                li= 'NAME: '+val.attributes.name
+                li -content
+                    each val4, key4 in val.content
+                        li= key4 + ' - ' + val4
+                        ul
+                            each k2,v2 in val4
+                                li= k2+' *** '+v2
+        hr
+        ul
+            each val, key in self.api
+                li= key +' - '+ val
