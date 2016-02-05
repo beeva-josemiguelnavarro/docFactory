@@ -1,3 +1,38 @@
+<!-- macros -->
+<!--
+{% macro paramTable(prop) %}
+<div class="api__documentation__parameters">
+    <div class="col--first api__documentation__parameters__row api__documentation__parameters__row-top">
+        <div class="api__documentation__parameters__col">
+            <span class="api__documentation__parameters__title">{{prop.key}}</span>
+        </div>
+        <div class="api__documentation__parameters__col">
+            <span class="api__documentation__parameters__text">{% autoescape false %} {{prop.description}}{% endautoescape %}</span>
+        </div>
+    </div>
+    <div class="col--second api__documentation__parameters__row">
+        <div class="api__documentation__parameters__col">
+            <span class=" api__documentation__parameters__title">{%if prop.required%}required{%else%}optional{%endif%} (
+                <label class="parameters__type">{{prop.type}}</label>)
+            </span>
+            {% if prop.enum%}
+            <br><strong>one of (</strong> {{prop.enum}} <strong>)</strong>
+            {% endif %}
+        </div>
+        <div class="api__documentation__parameters__col">
+            <span class="api__documentation__parameters__text">
+            {% if prop.example%}
+                <strong>Example:</strong>{% autoescape false %} {{prop.example}} {% endautoescape %}
+            {% else %}
+                <strong></strong>
+            {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+{% endmacro %}
+-->
+
 <article id="{{anchor}}">
     <section class="api__documentation">
         <article>
@@ -23,14 +58,32 @@
             </div>
             {% for key,prop in headers %}
             <div class="api__documentation__parameters">
-                <div class="col--first"><span class="parameters__parameter">{{key}}</span> <span
-                        class="parameters__default">required (<label
-                        class="parameters__type">{{prop.type}}</label>)</span>
+                <div class="col--first api__documentation__parameters__row api__documentation__parameters__row-top">
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__title">{{key}}</span>
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">{% autoescape false %} {{prop.description}}{% endautoescape %}</span>
+                    </div>
                 </div>
-
-                <div class="col--second"><span
-                        class="parameters__description">{% autoescape false %} {{prop.description}} {% endautoescape %}</span><span
-                        class="paramters__example"> <strong>Example:</strong> {{prop["example"]}}</span>
+                <div class="col--second api__documentation__parameters__row">
+                    <div class="api__documentation__parameters__col">
+                        <span class=" api__documentation__parameters__title">{%if prop["required"]%}required{%else%}optional{%endif%} (
+                            <label class="parameters__type">{{prop.type}}</label>)
+                        </span>
+                        {% if prop["enum"]%}
+                        <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
+                        {% endif %}
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">
+                        {% if prop["example"]%}
+                            <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}
+                        {% else %}
+                            <strong></strong>
+                        {% endif %}
+                        </span>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -44,14 +97,15 @@
             </div>
             {% for key,prop in body %}
             <div class="api__documentation__parameters">
-                <div class="col--first"><span class="parameters__parameter">{{prop["key"]}}</span>
-                </div>
-
-                <div class="col--second"><span
-                        class="parameters__description">{% autoescape false %} {{prop}}{% endautoescape %}</span>
+                <div class="col--first api__documentation__parameters__row api__documentation__parameters__row-top">
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__title">{{prop["key"]}}</span>
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">{% autoescape false %} {{prop}}{% endautoescape %}</span>
+                    </div>
                 </div>
             </div>
-
             {% endfor %}
         </article>
         {% endif %}
@@ -63,27 +117,31 @@
             </div>
             {% for key,prop in queryParams %}
             <div class="api__documentation__parameters">
-                <div class="col--first">
-                    <span class="parameters__parameter">{{prop["key"]}}</span>
-                    <span class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} (<label
-                            class="parameters__type">{{prop.type}}</label>)
+                <div class="col--first api__documentation__parameters__row api__documentation__parameters__row-top">
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__title">{{prop["key"]}}</span>
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">{% autoescape false %} {{prop.description}}{% endautoescape %}</span>
+                    </div>
+                </div>
+                <div class="col--second api__documentation__parameters__row">
+                    <div class="api__documentation__parameters__col">
+                        <span class=" api__documentation__parameters__title">{%if prop["required"]%}required{%else%}optional{%endif%} (<label
+                                class="parameters__type">{{prop.type}}</label>)</span>
                         {% if prop["enum"]%}
                         <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
                         {% endif %}
-                    </span>
-
-                </div>
-
-                <div class="col--second">
-                    <span
-                            class="parameters__description">{% autoescape false %} {{prop.description}}{% endautoescape %}</span>
-                    {% if prop["example"]%}
-                    <span
-                            class="paramters__example"> <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}</span>
-                    {% else %}
-                    <span
-                            class="paramters__example"> <strong> </strong> </span>
-                    {% endif %}
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">
+                        {% if prop["example"]%}
+                            <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}
+                        {% else %}
+                            <strong></strong>
+                        {% endif %}
+                        </span>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -97,25 +155,31 @@
             </div>
             {% for key,prop in uriParams %}
             <div class="api__documentation__parameters">
-                <div class="col--first"><span class="parameters__parameter">{{prop["key"]}}</span> <span
-                        class="parameters__default">{%if prop["required"]%}required{%else%}optional{%endif%} (<label
-                        class="parameters__type">{{prop.type}}</label>)
-                    {% if prop["enum"]%}
-                    <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
-                    {% endif %}
-                </span>
+                <div class="col--first api__documentation__parameters__row api__documentation__parameters__row-top">
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__title">{{prop["key"]}}</span>
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">{% autoescape false %} {{prop.description}}{% endautoescape %}</span>
+                    </div>
                 </div>
-
-                <div class="col--second">
-                    <span
-                            class="parameters__description">{% autoescape false %}{{prop.description}}{% endautoescape %}</span>
-                    {% if prop["example"]%}
-                    <span
-                            class="paramters__example"> <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}</span>
-                    {% else %}
-                    <span
-                            class="paramters__example"> <strong> </strong> </span>
-                    {% endif %}
+                <div class="col--second api__documentation__parameters__row">
+                    <div class="api__documentation__parameters__col">
+                        <span class=" api__documentation__parameters__title">{%if prop["required"]%}required{%else%}optional{%endif%} (<label
+                                class="parameters__type">{{prop.type}}</label>)</span>
+                        {% if prop["enum"]%}
+                        <br><strong>one of (</strong> {{prop["enum"]}} <strong>)</strong>
+                        {% endif %}
+                    </div>
+                    <div class="api__documentation__parameters__col">
+                        <span class="api__documentation__parameters__text">
+                        {% if prop["example"]%}
+                            <strong>Example:</strong>{% autoescape false %} {{prop["example"]}} {% endautoescape %}
+                        {% else %}
+                            <strong></strong>
+                        {% endif %}
+                        </span>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -146,20 +210,20 @@
         <div class="example__info">
             <h2 class="example__subtitle--response">REQUEST</h2>
             {% if postBodyPars["application/json"] %}
-                {% if postBodyPars["application/json"]["example"] %}
+            {% if postBodyPars["application/json"]["example"] %}
             <h3 class="example__subtitle--status-code">Example</h3>
                 <span class="example__json">
                     <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["example"]}} {% endautoescape %}</pre>
                 </span>
-                {% endif %}
-                {% if postBodyPars["application/json"]["schema"] %}
+            {% endif %}
+            {% if postBodyPars["application/json"]["schema"] %}
             <h3 class="example__subtitle--status-code">Schema</h3>
                 <span class="example__json">
                     <pre class="prettyprint_json">{% autoescape false %} {{postBodyPars["application/json"]["schema"]}} {% endautoescape %}</pre>
                 </span>
-                {% endif %}
+            {% endif %}
             {% else %}
-                {% for key,prop in postBodyPars %}
+            {% for key,prop in postBodyPars %}
             <div class="example__info__col {% if not loop.first %}example__info__col-with_margin{% endif %}">
                     <span class="example__info__block">
                         <label class="example__info__text">Example: </label>
@@ -171,12 +235,12 @@
                         <label class="example__info__text">{{key}}</label>
                     </span>
             </div>
-                    {% if prop["example"] %}
+            {% if prop["example"] %}
              <span class="example__json ">
                  <pre class="prettyprint_json"> {{ prop["example"] }}</pre>
              </span>
-                    {% endif %}
-                {% endfor %}
+            {% endif %}
+            {% endfor %}
             {% endif %}
         </div>
         {% endif %}
