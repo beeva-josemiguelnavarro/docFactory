@@ -789,13 +789,15 @@ function preprocessRamlJson(data, params) {
     var indexResource = -1
     if (documentation === undefined)
         documentation = []
+    console.log('checking')
     for (var index in documentation) {
         var tempTitle = updatedData["documentation"][index].title
+        console.log('title -> ',tempTitle)
         if (tempTitle.toLowerCase().indexOf('terms') > -1)
             indexTerms = index
         else if (tempTitle.toLowerCase().indexOf('resources') > -1)
             indexResource = index
-        if (quickstart === 'paystats' && tempTitle.title.indexOf('Authentication') > -1) {
+        if (quickstart === 'paystats' && tempTitle.indexOf('Authentication') > -1) {
             var textAuth = fs.readFileSync(__dirname + "/../" + 'templates/2LEGSOAUTH.md', 'utf8');
             var authentication = {
                 title: 'Authentication',
@@ -808,6 +810,7 @@ function preprocessRamlJson(data, params) {
             //console.log(updatedData["documentation"])
         }
     }
+    console.log('quickstart')
     if (quickstart !== undefined && quickstart !== 'no' && quickstart !== 'paystats' && quickstart !== 'general') {
         var quickstartText = {
             paystats: 'templates/quickstart/PAYSTATS.md',
@@ -828,6 +831,7 @@ function preprocessRamlJson(data, params) {
         //updatedData["documentation"] = documentation
         //console.log(updatedData["documentation"])
     }
+    console.log('terms')
     if (termsLink!==undefined && termsLink.length>0 &&  indexTerms < 0) {
         var textTerms = fs.readFileSync(__dirname + "/../" + 'templates/TERMSANDCONDS.md', 'utf8');
         textTerms = textTerms.replace("\"api-name\"", apiName)
@@ -838,6 +842,7 @@ function preprocessRamlJson(data, params) {
         }
         documentation.push(terms)
     }
+    console.log('resources')
     if (indexResource < 0) {
         var textResources = fs.readFileSync(__dirname + "/../" + 'templates/RESOURCES.md', 'utf8');
         var resources = {
@@ -846,6 +851,7 @@ function preprocessRamlJson(data, params) {
         }
         documentation.push(resources)
     }
+    console.log('done')
     updatedData["documentation"] = documentation
     return updatedData
 }
@@ -856,10 +862,11 @@ router.get('/online', function (request, response, next) {
     var filename = Date.now() + uriParts.query.apiName + '.raml'
     console.log('Getting online: ', uriFile, ' out: ', filename)
     raml.loadFile(uriFile).then(function (data) {
-        console.log('tofile')
+        console.log('process')
         var preprocesedData = preprocessRamlJson(data, uriParts.query)
-        toFile('./RAML/preN-'+filename.replace('.raml','.json'),data)
-        toFile('./RAML/preY-'+filename.replace('.raml','.json'),preprocesedData)
+        console.log('After process file')
+        //toFile('./RAML/preN-'+filename.replace('.raml','.json'),data)
+        //toFile('./RAML/preY-'+filename.replace('.raml','.json'),preprocesedData)
         console.log(data)
         parseRaml(preprocesedData, filename, request, response, next)
     }, function (error) {

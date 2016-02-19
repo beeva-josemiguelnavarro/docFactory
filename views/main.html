@@ -230,16 +230,17 @@
                                     LOADING...
                                 </div>
                             </div>
-                            <div class="col-md-3" ng-if="ready && documentation">
-                                <a href="/htmlFull?file={{documentationActive}}" target="_blank" class="btn btn-default">SEE FULL</a>
-                            </div>
-                            <div class="col-md-3" ng-show="ready && documentation">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" ng-show="ready && documentation!=''">
+                                <a ng-show="ready && documentation!=''" href="/htmlFull?file={{documentationActive}}" target="_blank" class="btn btn-default open-full">SEE FULL</a>
+
                                 <div class="parsingContainer">
+                                    <div class="row code documentationContainer" ng-if="ready && documentation!=''">
+                                        <pre>{{documentation}}</pre>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row code documentationContainer" ng-if="ready && documentation!=''">
-                            <pre>{{documentation}}</pre>
                         </div>
                     </div>
                     <div id="pane4" class="tab-pane">

@@ -9,6 +9,9 @@ var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+
+var minify = require('html-minifier').minify;
+
 app.set('port', (process.env.PORT || 8000));
 
 // views is directory for all template files
@@ -107,10 +110,10 @@ app.get('/documentations',function (request, response, next){
 
 app.get('/html',function (request, response, next){
     var uriParts = url.parse(request.url, true, true);
-    fs.readFile('./output/'+uriParts.query.file, function(err, data) {
+    fs.readFile('./output/'+uriParts.query.file, "utf8", function(err, data) {
         if (!err) {
             response.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
-            response.end(data);
+            response.end(minify(data, { removeAttributeQuotes: true, collapseWhitespace:true }));
         } else {
             console.log ('file not found: ' + uriParts.query.file);
             //response.setHeader('Content-type' , headers);

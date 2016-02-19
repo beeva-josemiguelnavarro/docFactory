@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     var snippets = document.querySelectorAll('.parsingContainer');
 
-    $(snippets).prepend('<button class="btn" data-clipboard-snippet alt="Copy to clipboard">Copy to clipboard</button>');
+    $(snippets).prepend('<button class="btn copy-clipboard" data-clipboard-snippet alt="Copy to clipboard">Copy to clipboard</button>');
 
     var clipboardSnippets = new Clipboard('[data-clipboard-snippet]', {
         target: function(trigger) {
