@@ -741,7 +741,9 @@ function parseRaml(data, filename, request, response, next) {
         response.writeHead(200, headers);
         //response.end(content);
         template_result = removeHtmlComments(output.substring(output.indexOf("<!-- BUTTONS BAR -->") - 1, output.indexOf("<!-- CONTENT BLOCK END-->") - 1));
-        response.end(minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true }));
+        //console.log(template_result)
+        response.end(template_result)
+        //response.end(minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true }));
         console.log("All done!!!".rainbow);
     } catch (e) {
         console.error("Error inner -", e.message);

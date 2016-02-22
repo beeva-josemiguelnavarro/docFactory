@@ -175,6 +175,7 @@ angular.module('docFactoryApp',['angularFileUpload'])
             $scope.parsing = true
             $scope.parsingError = false
             $http.get(url).then(function(body){
+                console.log(body)
                 $scope.parsedDocumentation = body.data
                 $scope.parsing = false
                 console.log(body)
