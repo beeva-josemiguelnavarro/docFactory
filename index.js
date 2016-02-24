@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 
+var os = require("os");
 
 var path = require('path');
 var fs = require("fs");
@@ -193,5 +194,5 @@ app.get('/ramls',function (request, response, next){
 })
 
 app.listen(app.get('port'), function () {
-    console.log('Node app is running on port', app.get('port'));
+    console.log('Node app is running on ',process.env.npm_package_url,':', app.get('port'));
 });

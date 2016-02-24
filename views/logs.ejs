@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../views/partials/head %>
+</head>
+  <body class="container">
+
+  <header>
+    <% include ../views/partials/header %>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <ul>
+          <% files.forEach(function(file) { %>
+          <li><a target="_blank" href="/logs<%= file['path']%>"><%= file['name']%></a></li>
+          <% }); %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    <% include ../views/partials/footer %>
+  </footer>
+
+  <% include ../views/partials/footer_js %>
+</body>
+</html>

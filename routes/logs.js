@@ -70,6 +70,29 @@ router.get('/usersdev',function (request, response, next){
     displayLog(filename,request,response,next);
 })
 
+router.get('/', function (request, response, next) {
+    console.log(request.url)
+    var files = [
+        {
+            name: 'temp',
+            path: '/sys/class/thermal/thermal_zone0/temp'
+        },
+        {
+            name: 'users dev',
+            path: '/home/ec2-user/workspace/business-intelligence-interfacing/csv/new_users_dev/activated_users.csv'
+        },
+        {
+            name: 'users pro',
+            path: '/home/ec2-user/workspace/business-intelligence-interfacing/csv/new_users_pro/activated_users.csv'
+        },
+        {
+            name: 'log crm_welcome_user',
+            path: '/tmp/crm_welcome_users.log'
+        },
+    ]
+    response.render('../views/logs', {files:files});
+});
+
 router.get('/*', function (request, response, next) {
     console.log(request.url)
     //console.log(request.baseUrl)
