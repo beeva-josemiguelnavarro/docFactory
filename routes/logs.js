@@ -6,21 +6,26 @@ var url = require("url"),
     fs = require("fs");
 
 function sendFile(filename, request, response, next){
-    fs.stat(filename,function(err, stats){
-        if(err){
-            response.end(err);
-        } else if(stats.isFile()){
-            fs.readFile(filename, 'utf8', function(err,data){
-                if(!err){
-                    response.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
-                    response.end(data)
-                }
-                else
-                    response.end(err);
-            });
-        } else
-            response.end('File '+filename+' is not a file');
-    })
+    try {
+        fs.stat(filename,function(err, stats){
+            if(err){
+                response.end(err.toString());
+            } else if(stats.isFile()){
+                fs.readFile(filename, 'utf8', function(err,data){
+                    if(!err){
+                        response.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+                        response.end(data)
+                    }
+                    else
+                        response.end(err);
+                });
+            } else
+                response.end('File '+filename+' is not a file');
+        })
+    } catch (e){
+        response.end("Error reading the file: "+filename);
+    }
+
 }
 function displayLog(filename, request, response, next){
     var spliter = '******************* ';
