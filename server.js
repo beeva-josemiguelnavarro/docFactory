@@ -639,11 +639,11 @@ http.createServer(function(request, response) {
                                 //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
                                 //console.log(data["documentation"][i]["content"])
                                 //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                                //docitem.doc = marked(data["documentation"][i]["content"]+"");
-                                //console.log(docitem.doc)
+                                //docitem.docs = marked(data["documentation"][i]["content"]+"");
+                                //console.log(docitem.docs)
                                 //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
-                                //docitem.doc = removeTags(docitem.doc);
-                                //console.log(docitem.doc)
+                                //docitem.docs = removeTags(docitem.docs);
+                                //console.log(docitem.docs)
                                 //console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
                                 //docitem.title = data["documentation"][i]["title"];
                                 docitem.displayName = data["documentation"][i]["title"];
