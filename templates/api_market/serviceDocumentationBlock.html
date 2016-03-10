@@ -204,6 +204,17 @@
              <span class="example__json ">
                  <pre class="prettyprint_json"> {{ prop["example"] }}</pre>
              </span>
+            {% else %}
+            <span class="example__json ">
+                 <pre class="prettyprint_json">
+                     {%for key2,prop2 in prop['formParameters']%}
+                        {{key2}}:
+                            {%for key3,prop3 in prop2%}
+                                {{key3}}: {{prop3}}
+                            {%endfor%}
+                    {%endfor%}
+                 </pre>
+             </span>
             {% endif %}
             {% endfor %}
             {% endif %}

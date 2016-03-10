@@ -97,7 +97,7 @@ function generateAnchor(name) {
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
     console.log('resolvefulluris')
-    uriResolved = fullUri.replace(/\/\//g,'/') //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
+    uriResolved = fullUri//.replace(/\/\//g,'/') //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
     //console.log(fullUri)
     //console.log(ramlData.baseUriParameters)
     //console.log(uriParams)
