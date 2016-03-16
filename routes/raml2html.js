@@ -36,7 +36,7 @@ router.get('/', function (request, response, next) {
 
     raml.loadFile(filename).then(function(data) {
         console.log(data)
-        toFile(filename+'.json',JSON.stringify(data,null,3))
+        //toFile(filename+'.json',JSON.stringify(data,null,3))
         raml2html.render(data, config).then(function(htmlString){
             console.log('done!!')
             headers = {"Content-Type": "text/html; charset=utf-8"};
@@ -70,7 +70,7 @@ router.get('/*', function (request, response, next) {
 
     console.log(filename)
     raml.loadFile('./RAML/'+filename).then(function(data) {
-        toFile(filename+'.json',JSON.stringify(data,null,3))
+        //toFile(filename+'.json',JSON.stringify(data,null,3))
         console.log(data)
         raml2html.render(data, config).then(function(htmlString){
             console.log('done!!')
