@@ -8,12 +8,12 @@
                     | lower }}</strong> </span>
             </div>
             {% if description != undefined %}
-            <p class="api__documentation__text">
+            <div class="api__documentation__text">
                 {% autoescape false %} {{description}} {% endautoescape %}
-            </p>
+            </div>
             {% endif %}
             {% if methodData.description != undefined %}
-            <p class="api__documentation__text">{% autoescape false %}{{methodData.description}}{% endautoescape %}</p>
+            <div class="api__documentation__text">{% autoescape false %}{{methodData.description}}{% endautoescape %}</div>
             {% endif %}
         </article>
         {% if headers != null %}

@@ -285,7 +285,7 @@ function syntaxHighlight(json) {
 }
 
 function formatedApiMarket(compiledHtml) {
-    //console.log('FORMAT AM - ',compiledHtml)
+    console.log('FORMAT AM - ',compiledHtml)
     while (compiledHtml.indexOf('<a href="#/') > -1)
         compiledHtml = compiledHtml.replace('<a href="#/', '<a href="/');
     while (compiledHtml.indexOf('<a href') > -1)
@@ -350,7 +350,6 @@ function formatedApiMarket(compiledHtml) {
     //compiledHtml = removeIds(compiledHtml)
 
     while (compiledHtml.toLowerCase().indexOf('lang-json') > -1){
-        console.log('json item')
         //console.log(compiledHtml)
         var indexOfJson = compiledHtml.toLowerCase().indexOf('lang-json"')
         var indexStartCode = compiledHtml.indexOf('>',indexOfJson)
@@ -370,7 +369,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
     //console.log(resources.length);
     for (var resourceKey in resources) {
 
-        //console.log(resourceKey, resources[resourceKey].relativeUri);
+        console.log(resourceKey, resources[resourceKey].relativeUri);
         //console.log("all Methods", resource["methods"]);
 
         currentPath = parentRUri + resources[resourceKey].relativeUri;
@@ -396,7 +395,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         }
         /*END ADDING PARENT URI PARAMETERS */
         /*********************************************/
-        //console.log('1----------1')
+        console.log('1----------1')
         var anchorBase = "";
         var dataIndex = new Object();
         dataIndex.methods = [];
@@ -432,12 +431,14 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             dataIndex.anchor = anchorBase;
             dataIndex.displayName = dataHeadTempl["displayName"];
         }
-        //console.log('1----------2')
+        console.log('1----------2')
 
         for (var methodKey in resources[resourceKey]["methods"]) {
             dataobject = new Object();
             dataobject.queryParams = [];
+            console.log('*--*-*-*-*-',resources[resourceKey]["methods"][methodKey])
             omethod = resources[resourceKey]["methods"][methodKey];
+            console.log('*sadasd',omethod)
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
             for (var res in omethod.responses) {
@@ -449,8 +450,8 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             }
 
             dataobject.methodData = omethod;
-            //console.log(omethod)
-            //console.log('1----------21')
+            console.log(omethod)
+            console.log('1----------21')
 
             if (whatIsIt(omethod.method) == "undefined") {
                 throw "Undefined method name for " + +JSON.stringify(resources[resourceKey], null, 3);
@@ -542,26 +543,26 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             //console.log('1----------3')
             //Generate examples for curl, python and java
             dataobject["resolvedUri"] = resolveFullURI(ramlData, dataobject.fullUri, dataobject.uriParams);
-            //console.log('point0')
+            console.log('point0')
             qpars = "";
             for (key in dataobject.queryParams) {
                 if (dataobject.queryParams[key]["required"])
                     qpars += dataobject.queryParams[key]["key"] + "=" + dataobject.queryParams[key]["example"] + "&";
             }
 
-            //console.log('point1')
+            console.log('point1')
             dataobject["resolvedUriParams"] = dataobject["resolvedUri"] + (qpars != "" ? "?" + qpars.substring(0, qpars.length - 1) : "");
             //dataobject["resolvedUriParams"] = resolveUris(ramlData, dataobject.fullUri, dataobject.uriParams);
             dataobject["url"] = {}
             tempurl = dataobject["resolvedUri"].split(":");
-            //console.log('point2')
+            console.log('point2')
             dataobject["url"]["protocol"] = tempurl[0];
-            //console.log('point3')
+            console.log('point3')
             tempurl = tempurl[1].substring(2);
-            //console.log('point4')
+            console.log('point4')
             dataobject["url"]["host"] = tempurl.substring(0, tempurl.indexOf("/"));
             dataobject["url"]["path"] = tempurl.substring(tempurl.indexOf("/"));
-            //console.log('1----------4')
+            console.log('1----------4')
 
             if (whatIsIt(omethod.body) == "undefined") {
                 //console.log('body 4: ', dataobject["resolvedUriParams"]);
@@ -596,7 +597,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         }
 
         //console.log("methods size ", dataIndex.methods.length);
-        //console.log('1----------5')
+        console.log('1----------5')
 
         if (dataIndex.methods.length > 0) {
             //console.log("entrando", dataIndex);
@@ -607,7 +608,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         if (resources[resourceKey].hasOwnProperty("resources")) {
             parseResources(ramlData, baseUri, resources[resourceKey]["resources"], currentPath, resources[resourceKey]["uriParameters"])
         }
-        //console.log('1----------6')
+        console.log('1----------6')
 
     }
 
@@ -657,8 +658,17 @@ function parseRaml(data, filename, request, response, next) {
             for (i = 0; i < data["documentation"].length; i++) {
                 docitem = {};
                 docitem.displayName = data["documentation"][i]["title"];
+
                 tempContent = data["documentation"][i]['content']
-                tempContent = marked(tempContent)
+
+                if( docitem.displayName == 'Headers')
+                    console.log('before',tempContent)
+
+                tempContent = marked(tempContent).trim()
+
+                if( docitem.displayName == 'Headers')
+                    console.log('middle',tempContent)
+
                 while (tempContent.indexOf('··') > -1) {
                     indexBefore = tempContent.indexOf('··1.') - 1;
                     indexAfter = tempContent.indexOf('</li>', indexBefore);
@@ -672,12 +682,15 @@ function parseRaml(data, filename, request, response, next) {
                     //console.log('---', splitContent);
                     tempContent = contentBefore + splitContent + contentAfter;
                 }
-                docitem.description = tempContent
+                docitem.description = formatedApiMarket(tempContent)
                 docitem.anchor = generateAnchor("documentation-" + docitem.displayName)
                 dataHead["documentation"].push(docitem);
 
-                out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
+                if( docitem.displayName == 'Headers')
+                    console.log('after',tempContent)
 
+                //out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
+                out = compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html");
                 dataHead['documentation_article'] += out
             }
 
@@ -696,8 +709,9 @@ function parseRaml(data, filename, request, response, next) {
         //console.log('----1')
         //parseMainResources(data,dataHead["baseUri"])
         parseResources(data, dataHead["baseUri"], data["resources"], "", null);
-        //console.log('----2')
+        console.log('----2')
 
+        console.log('***********1')
         if (uriParts.query && uriParts.query.template && uriParts.query.template == "security") {
             template = swig.compileFile(__dirname + "/.." + "/templates/api_market/securityTemplate.html");
         } else if (uriParts.query && uriParts.query.full && uriParts.query.full == "true") {
@@ -705,13 +719,14 @@ function parseRaml(data, filename, request, response, next) {
         } else {
             template = swig.compileFile(__dirname + "/.." + "/templates/api_market/bodyTemplate.html");
         }
-
+        console.log('***********2')
         dataHead["all_templates"] = all_templates;
         if (whatIsIt(dataHead["documentation"]) != "undefined") {
             dataHead["documentation_index"] = compileTemplate(dataHead, "templates/api_market/sidebarListDocumentation.html");
         }
         dataHead["all_index"] = all_index;
         output = template(dataHead);
+        console.log('***********3')
 
         if (uriParts.query && uriParts.query.full && uriParts.query.full == "true")
             toFile("./output/full-" + filename.replace(".raml", ".html"), output);

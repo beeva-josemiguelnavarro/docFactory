@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('docFactoryApp',['angularFileUpload'])
-    .controller('docFactoryController',['$scope','$http' ,'FileUploader',function($scope, $http,FileUploader){
+    .controller('docFactoryController',['$scope','$http','$window' ,'FileUploader',function($scope, $http, $window,FileUploader){
         $scope.options = ['upload','local','online','documentations']
         $scope.option = $scope.options[1];
         $scope.files = []
@@ -186,6 +186,14 @@ angular.module('docFactoryApp',['angularFileUpload'])
             });
         }
 
+        $scope.seeWithRaml2Html = function(){
+            var file = ''
+            if($scope.myData.pathFile.indexOf('.raml')>-1)
+                file = $scope.myData.pathFile.replace('.raml','')
+            var url = 'http://localhost:8000/raml2html/'+file;
+            console.log(url)
+            $window.open(url, '_blank');
+        }
         $scope.sendFormOnline = function(){
             var url = '/RAML/online?uri='+$scope.myDataOnline.pathFile + '&'+generatePath($scope.myDataOnline)
             $scope.parsingOnline = true

@@ -44,12 +44,17 @@ router.get('/', function (request, response, next) {
             response.write(htmlString);
             response.end();
         }, function(error){
-            console.log("RAML2HTML error ".red, error.context.cyan, "," + error.message);
-            sendError(error, response)
+            headers = {"Content-Type": "text/plain; charset=utf-8"};
+            response.writeHead(400, headers);
+            response.write(error.message);
+            response.end();
         });
     }, function(error) {
         console.error("LOADFILE error ".red, error.context.cyan, "," + error.message);
-        sendError(error, response)
+        headers = {"Content-Type": "text/plain; charset=utf-8"};
+        response.writeHead(400, headers);
+        response.write(error.message);
+        response.end();
     });
 
 });
@@ -74,12 +79,17 @@ router.get('/*', function (request, response, next) {
             response.write(htmlString);
             response.end();
         }, function(error){
-            console.log("RAML2HTML error ".red, error.context.cyan, "," + error.message);
-            sendError(error, response)
+            headers = {"Content-Type": "text/plain; charset=utf-8"};
+            response.writeHead(400, headers);
+            response.write(error.message);
+            response.end();
         });
     }, function(error) {
         console.error("LOADFILE error ".red, error.context.cyan, "," + error.message);
-        sendError(error, response)
+        headers = {"Content-Type": "text/plain; charset=utf-8"};
+        response.writeHead(400, headers);
+        response.write(error.message);
+        response.end();
     });
 
 });
