@@ -97,6 +97,10 @@ function generateAnchor(name) {
 /*****************************************************************/
 function resolveFullURI(ramlData, fullUri, uriParams) {
     console.log('resolvefulluris')
+    console.log(fullUri)
+    if(fullUri[fullUri.length-1]==='/')
+        fullUri = fullUri.slice(0, -1);
+    console.log(fullUri)
     uriResolved = fullUri//.replace(/\/\//g,'/') //"https://{endpoint}/{apiPath}/{version}/tvm/{bookTitle}"
     //console.log(fullUri)
     //console.log(ramlData.baseUriParameters)
@@ -285,7 +289,7 @@ function syntaxHighlight(json) {
 }
 
 function formatedApiMarket(compiledHtml) {
-    console.log('FORMAT AM - ',compiledHtml)
+    //console.log('FORMAT AM - ',compiledHtml)
     while (compiledHtml.indexOf('<a href="#/') > -1)
         compiledHtml = compiledHtml.replace('<a href="#/', '<a href="/');
     while (compiledHtml.indexOf('<a href') > -1)
@@ -436,9 +440,9 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
         for (var methodKey in resources[resourceKey]["methods"]) {
             dataobject = new Object();
             dataobject.queryParams = [];
-            console.log('*--*-*-*-*-',resources[resourceKey]["methods"][methodKey])
+            //console.log('*--*-*-*-*-',resources[resourceKey]["methods"][methodKey])
             omethod = resources[resourceKey]["methods"][methodKey];
-            console.log('*sadasd',omethod)
+            //console.log('*sadasd',omethod)
             omethod.description = formatedApiMarket(marked(omethod.description));
             var methods = {}
             for (var res in omethod.responses) {
@@ -450,7 +454,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             }
 
             dataobject.methodData = omethod;
-            console.log(omethod)
+            //console.log(omethod)
             console.log('1----------21')
 
             if (whatIsIt(omethod.method) == "undefined") {
@@ -543,7 +547,7 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             //console.log('1----------3')
             //Generate examples for curl, python and java
             dataobject["resolvedUri"] = resolveFullURI(ramlData, dataobject.fullUri, dataobject.uriParams);
-            console.log('point0')
+            console.log('point0', dataobject["resolvedUri"])
             qpars = "";
             for (key in dataobject.queryParams) {
                 if (dataobject.queryParams[key]["required"])
@@ -555,14 +559,14 @@ function parseResources(ramlData, baseUri, resources, parentRUri, parentUriParam
             //dataobject["resolvedUriParams"] = resolveUris(ramlData, dataobject.fullUri, dataobject.uriParams);
             dataobject["url"] = {}
             tempurl = dataobject["resolvedUri"].split(":");
-            console.log('point2')
+            console.log('point2',tempurl)
             dataobject["url"]["protocol"] = tempurl[0];
-            console.log('point3')
+            console.log('point3',tempurl)
             tempurl = tempurl[1].substring(2);
-            console.log('point4')
+            console.log('point4',tempurl)
             dataobject["url"]["host"] = tempurl.substring(0, tempurl.indexOf("/"));
             dataobject["url"]["path"] = tempurl.substring(tempurl.indexOf("/"));
-            console.log('1----------4')
+            console.log('1----------4',dataobject["url"])
 
             if (whatIsIt(omethod.body) == "undefined") {
                 //console.log('body 4: ', dataobject["resolvedUriParams"]);
@@ -666,8 +670,8 @@ function parseRaml(data, filename, request, response, next) {
 
                 tempContent = marked(tempContent).trim()
 
-                if( docitem.displayName == 'Headers')
-                    console.log('middle',tempContent)
+                //if( docitem.displayName == 'Headers')
+                //    console.log('middle',tempContent)
 
                 while (tempContent.indexOf('··') > -1) {
                     indexBefore = tempContent.indexOf('··1.') - 1;
@@ -686,8 +690,8 @@ function parseRaml(data, filename, request, response, next) {
                 docitem.anchor = generateAnchor("documentation-" + docitem.displayName)
                 dataHead["documentation"].push(docitem);
 
-                if( docitem.displayName == 'Headers')
-                    console.log('after',tempContent)
+                //if( docitem.displayName == 'Headers')
+                //    console.log('after',tempContent)
 
                 //out = formatedApiMarket(compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html"));
                 out = compileTemplate(docitem, "templates/api_market/serviceInfoBlock.html");
@@ -757,7 +761,8 @@ function parseRaml(data, filename, request, response, next) {
         //response.end(content);
         template_result = removeHtmlComments(output.substring(output.indexOf("<!-- BUTTONS BAR -->") - 1, output.indexOf("<!-- CONTENT BLOCK END-->") - 1));
         //console.log(template_result)
-        response.end(template_result)
+        var minified_result = minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true })
+        response.end(minified_result)
         //response.end(minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true }));
         console.log("All done!!!".rainbow);
     } catch (e) {

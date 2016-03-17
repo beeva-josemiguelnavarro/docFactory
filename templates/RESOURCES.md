@@ -1,2 +1,2 @@
-- [Postman tutorial](../postman-tutorial)
-- [API Market Console tutorial](../console-tutorial)
+- [Postman tutorial](../../postman-tutorial)
+- [API Market Console tutorial](../../console-tutorial)
