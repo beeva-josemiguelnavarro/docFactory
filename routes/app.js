@@ -762,6 +762,7 @@ function parseRaml(data, filename, request, response, next) {
         template_result = removeHtmlComments(output.substring(output.indexOf("<!-- BUTTONS BAR -->") - 1, output.indexOf("<!-- CONTENT BLOCK END-->") - 1));
         //console.log(template_result)
         var minified_result = minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true })
+        toFile("./output/minified_" + filename.replace(".raml", ".html"), minified_result);
         response.end(minified_result)
         //response.end(minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true }));
         console.log("All done!!!".rainbow);
@@ -884,9 +885,9 @@ router.get('/online', function (request, response, next) {
     var filename = Date.now() + uriParts.query.apiName + '.raml'
     console.log('Getting online: ', uriFile, ' out: ', filename)
     raml.loadFile(uriFile).then(function (data) {
-        console.log('process')
+        //console.log('process')
         var preprocesedData = preprocessRamlJson(data, uriParts.query)
-        console.log('After process file')
+        //console.log('After process file')
         //toFile('./RAML/preN-'+filename.replace('.raml','.json'),data)
         //toFile('./RAML/preY-'+filename.replace('.raml','.json'),preprocesedData)
         console.log(data)
@@ -904,11 +905,11 @@ router.get('/file', function (request, response, next) {
     console.log('Getting file: ', pathFile, ' out: ', filename)
     raml.loadFile(pathFile).then(function (data) {
         var preprocesedData = preprocessRamlJson(data, uriParts.query)
-        toFile(pathFile.replace('.raml','N.json'),data)
-        toFile(pathFile.replace('.raml','Y.json'),preprocesedData)
+        //toFile(pathFile.replace('.raml','N.json'),data)
+        //toFile(pathFile.replace('.raml','Y.json'),preprocesedData)
         //console.log('tofile')
         //toFile(pathFile.replace('.html','.json'),data)
-        console.log('parse')
+        //console.log('parse')
         parseRaml(preprocesedData, filename, request, response, next)
     }, function (error) {
         console.error("/local file/ Error loading local file -".red, error.context.cyan, "," + error.message);
