@@ -761,9 +761,9 @@ function parseRaml(data, filename, request, response, next) {
         //response.end(content);
         template_result = removeHtmlComments(output.substring(output.indexOf("<!-- BUTTONS BAR -->") - 1, output.indexOf("<!-- CONTENT BLOCK END-->") - 1));
         //console.log(template_result)
-        var minified_result = minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true })
-        toFile("./output/minified_" + filename.replace(".raml", ".html"), minified_result);
-        response.end(minified_result)
+        //var minified_result = minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true })
+        //toFile("./output/minified_" + filename.replace(".raml", ".html"), minified_result);
+        response.end(template_result)
         //response.end(minify(template_result, { removeAttributeQuotes: true, collapseWhitespace:true }));
         console.log("All done!!!".rainbow);
     } catch (e) {
