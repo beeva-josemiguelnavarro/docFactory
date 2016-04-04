@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 var os = require("os");
 
 var path = require('path');
@@ -35,10 +37,13 @@ app.use('/raml2html',ramlHtml);
 app.use('/blueprint',blueprint);
 app.use('/logs',logs);
 
-app.get('/', function (request, response, next) {
+app.get('/v1', function (request, response, next) {
     response.sendFile(path.join(__dirname, 'views/main.html'))
 });
 
+app.get('/', function (request, response, next) {
+    response.sendFile(path.join(__dirname, 'views/main_v2.html'))
+});
 
 
 //var storage = multer.diskStorage({
@@ -190,6 +195,26 @@ app.get('/ramls',function (request, response, next){
             response.send(data);
             response.end()
         }
+    })
+})
+
+
+var gitlab = require('./routes/gitlab')
+var ramlsList = []
+
+//gitlab('333','develop','', function(err, ramls){
+//    if(ramls) ramlsList = ramls;
+//    console.log(ramls)
+//})
+
+app.get('/gitramls',function (request, response, next){
+    gitlab('333','develop','', function(err, ramls){
+        if(ramls) ramlsList = ramls;
+        console.log(ramls)
+
+        console.log('getting ramls from git')
+        response.status(200)
+        response.end(JSON.stringify(ramlsList))
     })
 })
 

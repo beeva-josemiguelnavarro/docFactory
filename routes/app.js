@@ -218,9 +218,8 @@ function resolveUris(ramlData, fullUri, uriParams) {
 }
 
 function sendError(error, r) {
-    r.writeHead(501, {"Content-Type": "text/plain"});
-    r.write("" + error);
-    r.end();
+    r.writeHead(404, {"Content-Type": "text/plain"});
+    r.end("" + error.message);
 }
 
 function compileTemplate(data, template) {
@@ -962,4 +961,26 @@ router.get('/json/:jsonFileName', function (request, response, next) {
     });
 });
 
+router.get('/gitlab', function (request, response, next) {
+    var uriParts = url.parse(request.url, true, true);
+    var uriFile = 'https://gitlab.digitalservices.es/dev-center/raml/raw/develop/' + uriParts.query.uri + '?private_token=iZ8f2RZkT5zLhEFaE1BA'
+    var filename = Date.now() + uriParts.query.apiName + '.raml'
+    console.log('Getting gitlab: ', uriFile, ' out: ', filename)
+    raml.loadFile(uriFile).then(function (data) {
+        var preprocesedData = preprocessRamlJson(data, uriParts.query)
+        console.log(data)
+        parseRaml(preprocesedData, filename, request, response, next)
+    }, function (error) {
+        console.error("/online/ Error loading online file -".red, error.context.cyan, "," + error.message);
+        sendError(error, response)
+    });
+});
+
+router.get('', function(req, res, next){
+    //GET /projects/:id/repository/branches/:branch
+    //https://gitlab.digitalservices.es/api/v3/projects/333/repository/tree?private_token=iZ8f2RZkT5zLhEFaE1BA
+    var token = '?private_token=iZ8f2RZkT5zLhEFaE1BA'
+    var endpoint = 'https://gitlab.digitalservices.es/projects/333/repository/branches/develop'+token;
+    ///projects/:id/repository/files
+})
 module.exports = router;

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DocFactory</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <link rel='stylesheet' href='/stylesheets/main.css'/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="javascripts/docFactoryApp_v2.js"></script>
+</head>
+<body ng-app="docFactoryApp">
+<div class="container-fluid" ng-controller="docFactoryController">
+    <div class="text-center">
+        <img src="images/banner.jpg" class="banner-doc_factory" alt="DocFactory">
+        <!--
+        <h1>DocFactory</h1>
+        -->
+        <hr>
+    </div>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div ng-if="!ready"class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+            <form class="form-horizontal" name="onlineForm" ng-if="ready">
+                <div class="form-group">
+                    <label for="raml" class="control-label col-sm-2">RAML URL *</label>
+
+                    <div class="col-sm-10">
+                        <select name="singleSelect" name="raml" id="raml" class="form-control" ng-model="myDataOnline.pathFile">
+                            <option ng-repeat="option in ramlFiles" value="{{option}}">{{option}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="overviewLink" class="control-label col-sm-2">Overview Link</label>
+
+                    <div class="col-sm-10">
+                        <input type="text" name="overviewLink" id="overviewLink" class="form-control"
+                               ng-model="myDataOnline.overviewLink">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="apiName" class="control-label col-sm-2">Api Name *</label>
+
+                    <div class="col-sm-10">
+                        <input type="text" name="apiName" id="apiName" class="form-control"
+                               ng-model="myDataOnline.apiName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="termsLink" class="control-label col-sm-2">Terms & Cond Link</label>
+
+                    <div class="col-sm-10">
+                        <input type="text" name="termsLink" id="termsLink" class="form-control"
+                               ng-model="myDataOnline.termsLink">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="baseuri" class="control-label col-sm-2">baseuri</label>
+
+                    <div class="col-sm-10">
+                        <input type="text" name="baseuri" id="baseuri" class="form-control"
+                               ng-model="myDataOnline.baseuri">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="environment" class="control-label col-sm-2">Environment</label>
+
+                    <div class="col-sm-10">
+                        <input type="text" name="environment" id="environment" class="form-control"
+                               ng-model="myDataOnline.environment">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="quickstart" class="control-label col-sm-2">Quickstart Section</label>
+
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="quickstart" id="quickstart_no"
+                                   ng-model="myDataOnline.quickstart" value="no"> No
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="quickstart" id="quickstart_general"
+                                   ng-model="myDataOnline.quickstart" value="general" checked> General
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="quickstart" id="quickstart_paystats"
+                                   ng-model="myDataOnline.quickstart" value="paystats"> PayStats
+                        </label>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-default" ng-click="sendFormOnline()"
+                            ng-disabled="onlineForm.$invalid">GENERATE DOC
+                    </button>
+                    <button type="submit" class="btn btn-default" ng-click="seeWithRaml2Html()"
+                                     ng-disabled="onlineForm.$invalid">GENERATE DOC
+                    </button>
+                </div>
+            </form>
+            <hr ng-if="ready">
+            <div class="parsingContainer" ng-show="ready">
+                <div class="row code documentationContainer"
+                     ng-if="!parsingOnline && parsedDocumentationOnline!=''">
+                    <pre>{{parsedDocumentationOnline}}</pre>
+                </div>
+                <div class="row code" ng-if="parsingOnline && !parsingOnlineError">
+                    <pre>Generating the doc</pre>
+                </div>
+                <div class="row code" ng-if="!parsingOnline && parsingOnlineError">
+                    <pre>
+                        <p>Error generating the doc</p>
+                        <p>{{parsedDocumentationError}}</p>
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+        integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+        crossorigin="anonymous"></script>
+<script src="javascripts/clipboard.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

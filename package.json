@@ -14,6 +14,7 @@
   "dependencies": {
     "aglio": "^2.2.0",
     "angular-file-upload": "^2.2.0",
+    "async": "^2.0.0-rc.2",
     "body-parser": "^1.14.1",
     "colors": "*",
     "cookie-parser": "^1.4.0",

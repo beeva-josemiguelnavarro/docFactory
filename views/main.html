@@ -203,9 +203,9 @@
                             </div>
                         </form>
                         <hr>
-                        <div class="parsingContainer">
+                        <div class="parsingContainer" >
                             <div class="row code documentationContainer"
-                                 ng-if="!parsingOnline && parsedDocumentationOnline!=''">
+                                 ng-if="!parsingOnline && parsedDocumentationOnline!='' && !parsingOnlineError">
                                 <pre>{{parsedDocumentationOnline}}</pre>
                             </div>
                             <div class="row code" ng-if="parsingOnline && !parsingOnlineError">

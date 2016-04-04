@@ -30,6 +30,8 @@ var TEMPLATE_API_MARKET = './templates/apiMarket2Html/template.nunjucks'
 router.get('/', function (request, response, next) {
     var uriParts = url.parse(request.url, true, true);
     var filename = uriParts.query.url
+    if(filename.indexOf('http') == -1)
+        filename = 'https://gitlab.digitalservices.es/dev-center/raml/raw/develop/' + filename + '?private_token=iZ8f2RZkT5zLhEFaE1BA'
     var config = raml2html.getDefaultConfig();
     if (uriParts.query.template !== undefined)
         config = raml2html.getDefaultConfig(TEMPLATE_API_MARKET,__dirname+'/..');
