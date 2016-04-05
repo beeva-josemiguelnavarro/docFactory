@@ -32,6 +32,7 @@ router.get('/', function (request, response, next) {
     var filename = uriParts.query.url
     if(filename.indexOf('http') == -1)
         filename = 'https://gitlab.digitalservices.es/dev-center/raml/raw/develop/' + filename + '?private_token=iZ8f2RZkT5zLhEFaE1BA'
+    console.log(filename)
     var config = raml2html.getDefaultConfig();
     if (uriParts.query.template !== undefined)
         config = raml2html.getDefaultConfig(TEMPLATE_API_MARKET,__dirname+'/..');
@@ -61,39 +62,39 @@ router.get('/', function (request, response, next) {
 
 });
 
-//router.get('/*', function (request, response, next) {
-//    var filename = request.params[0]+'.raml';
-//
-//    var uriParts = url.parse(request.url, true, true);
-//    console.log(uriParts)
-//    var config = raml2html.getDefaultConfig();
-//    if (uriParts.query.template !== undefined)
-//        config = raml2html.getDefaultConfig(TEMPLATE_API_MARKET,__dirname+'/..');
-//
-//    console.log(filename)
-//    raml.loadFile('./RAML/'+filename).then(function(data) {
-//        //toFile(filename+'.json',JSON.stringify(data,null,3))
-//        console.log(data)
-//        raml2html.render(data, config).then(function(htmlString){
-//            console.log('done!!')
-//            headers = {"Content-Type": "text/html; charset=utf-8"};
-//            response.writeHead(200, headers);
-//            response.write(htmlString);
-//            response.end();
-//        }, function(error){
-//            headers = {"Content-Type": "text/plain; charset=utf-8"};
-//            response.writeHead(400, headers);
-//            response.write(error.message);
-//            response.end();
-//        });
-//    }, function(error) {
-//        console.error("LOADFILE error ".red, error.context.cyan, "," + error.message);
-//        headers = {"Content-Type": "text/plain; charset=utf-8"};
-//        response.writeHead(400, headers);
-//        response.write(error.message);
-//        response.end();
-//    });
-//
-//});
+router.get('/*', function (request, response, next) {
+    var filename = request.params[0]+'.raml';
+
+    var uriParts = url.parse(request.url, true, true);
+    console.log(uriParts)
+    var config = raml2html.getDefaultConfig();
+    if (uriParts.query.template !== undefined)
+        config = raml2html.getDefaultConfig(TEMPLATE_API_MARKET,__dirname+'/..');
+
+    console.log(filename)
+    raml.loadFile('./RAML/'+filename).then(function(data) {
+        //toFile(filename+'.json',JSON.stringify(data,null,3))
+        console.log(data)
+        raml2html.render(data, config).then(function(htmlString){
+            console.log('done!!')
+            headers = {"Content-Type": "text/html; charset=utf-8"};
+            response.writeHead(200, headers);
+            response.write(htmlString);
+            response.end();
+        }, function(error){
+            headers = {"Content-Type": "text/plain; charset=utf-8"};
+            response.writeHead(400, headers);
+            response.write(error.message);
+            response.end();
+        });
+    }, function(error) {
+        console.error("LOADFILE error ".red, error.context.cyan, "," + error.message);
+        headers = {"Content-Type": "text/plain; charset=utf-8"};
+        response.writeHead(400, headers);
+        response.write(error.message);
+        response.end();
+    });
+
+});
 
 module.exports = router;

@@ -64,7 +64,7 @@ angular.module('docFactoryApp',[])
         }
 
         $scope.seeWithRaml2Html = function(){
-            var url = 'http://localhost:8000/raml2html/?url='+$scope.myDataOnline.pathFile;
+            var url = '/raml2html/?url='+$scope.myDataOnline.pathFile;
             console.log(url)
             $window.open(url, '_blank');
         }
